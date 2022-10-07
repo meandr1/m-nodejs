@@ -1,15 +1,15 @@
-function Product() {
-    this.id = "";
-    this.name = "";
-    this.description = "";
-    this.price = 0;
-    this.brand = "";
-    this.sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
-    this.activeSize = "";
-    this.quantity = 0;
-    this.date = new Date();
-    this.images = [];
-    this.reviews = []
+function Product(id,name,description,price,brand,sizes,activeSize,quantity,date,images,reviews) {
+    this.id = id;
+    this.name = name;
+    this.description = description;
+    this.price = price;
+    this.brand = brand;
+    this.sizes = sizes;
+    this.activeSize = activeSize;
+    this.quantity = quantity;
+    this.date = date;
+    this.images = images;
+    this.reviews = reviews;
     
 
     function setId(id) {
@@ -37,10 +37,10 @@ function Product() {
     }
 }
 
-let review = {
-    id: "",
-    author: "",
-    date: new Date(),
-    comment: "",
-    rating: {},
+function Review(id,author,date,comment,rating) {
+    this.id = id;
+    this.author = author;
+    this.date = date;
+    this.comment = comment;
+    this.rating = rating;
 }
