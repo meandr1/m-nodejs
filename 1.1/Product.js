@@ -11,105 +11,128 @@ function Product(id, name, description, price, brand, activeSize, quantity, imag
     this.images = images;
     this.reviews = [];
 
-    function setId(id) {
+    this.setId = function(id) {
         this.id = id;
     }
 
-    function getID() {
+    this.getID = function() {
         return this.id;
     }
 
-    function setName(name) {
+    this.setName = function(name) {
         this.name = name;
     }
 
-    function getName() {
+    this.getName = function() {
         return this.name;
     }
 
-    function setDescription(description) {
+    this.setDescription = function(description) {
         this.description = description;
     }
 
-    function getDescription() {
+    this.getDescription = function() {
         return this.description;
     }
 
-    function setPrice(price) {
+    this.setPrice = function(price) {
         this.price = price;
     }
 
-    function getPrice() {
+    this.getPrice = function() {
         return this.price;
     }
 
-    function setBrand(brand) {
+    this.setBrand = function(brand) {
         this.brand = brand;
     }
 
-    function getBrand() {
+    this.getBrand = function() {
         return this.brand;
     }
 
-    function setActiveSize(activeSize) {
-        this.activeSize = activeSize;
+    this.setActiveSize = function(activeSize) {
+        this.activeSize = activeSize.toUpperCase();
     }
 
-    function getActiveSize() {
+    this.getActiveSize = function() {
         return this.activeSize;
     }
 
-    function setQuantity(quantity) {
+    this.setQuantity = function(quantity) {
         this.quantity = quantity;
     }
 
-    function getQuantity() {
+    this.getQuantity = function() {
         return this.quantity;
     }
 
-    function setDate(date) {
+    this.setDate = function(date) {
         this.date = Date.parse(date);
     }
 
-    function getDate() {
+    this.getDate = function() {
         return this.date;
     }
 
-    function addSize(size) {
+    this.addSize = function(size) {
         size = size.toUpperCase();
         if (!this.sizes.includes(size)) {
             this.sizes.push(size);
         }
     }
 
-    function deleteSize(size) {
+    this.deleteSize = function(size) {
         size = size.toUpperCase();
         if (this.sizes.includes(size)) {
-            this.sizes.splice(this.sizes.inexOf(size), 1);
+            this.sizes.splice(this.sizes.indexOf(size), 1);
         }
     }
 
-    function addReview(id, author, comment, rating) {
-        let review = new Review(id, author, comment, rating);
+    this.addReview = function(id, author, comment, service, price, value, quality) {
+        let review = new Review(id, author, comment, service, price, value, quality);
         if (!this.reviews.includes(review)) {
             this.reviews.push(review);
         }
     }
 
-    function deleteReview(id) {
+    this.getReviewIndex = function(id) {
         for (let i = 0; i < this.reviews.length; i++) {
-            if(this.reviews[i].id === id){
-                this.reviews.splice(i, 1);
-                break;
+            if (this.reviews[i].id === id) {
+                return i;
             }
+        }
+        return -1;
+    }
+
+    this.deleteReview = function(id) {
+        let index = getReviewIndex(id);
+        if (index !== -1) {
+            this.reviews.splice(index, 1);
         }
     }
 
-    function Review(id, author, comment, rating) {
+    this.getReviewByID = function(id) {
+        let index = getReviewIndex(id);
+        if (index !== -1) {
+            return this.reviews[index];
+        }
+        return undefined;
+    }
+
+    function Review(id, author, comment, service, price, value, quality) {
         this.id = id;
         this.author = author;
         this.date = new Date;
         this.comment = comment;
-        this.rating = rating;
+        this.rating = new Map([['service', service],
+                                ['price', price],
+                                ['value', value],
+                                ['quality', quality]]);
     }
 }
+
+let product = new Product("123", "Tshirt", "fucking tshirt", 125.55, "BOSS", "M", 100, ["qwe", "rty", "asd", "zxc"]);
+product.addReview("1", "andrey", "tsirt is bullshit", 1, 2, 3, 4);
+product.addReview("2", "roma", "tsirt is bullshit", 2, 2, 2, 2);
+product.addReview("3", "kate", "tsirt is bullshit", 3, 3, 3, 3);
