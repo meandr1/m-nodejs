@@ -17,7 +17,7 @@ function Product(id, name, description, price, brand, activeSize, quantity, imag
     this.brand = brand;
     this.sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
     this.activeSize = activeSize;
-    this.quantity = quantity;
+    this.quantity = parseInt(quantity);
     this.date = Date.now();
     this.images = images.map(item => item.toLowerCase());
     this.reviews = [];
@@ -110,7 +110,9 @@ function Product(id, name, description, price, brand, activeSize, quantity, imag
      * Method sets product quantity
      */
     this.setQuantity = function (quantity) {
+        if(Number.isInteger(quantity))
         this.quantity = quantity;
+        else console.log("Please enter an integer quantity.")
     }
 
     /**
@@ -124,7 +126,12 @@ function Product(id, name, description, price, brand, activeSize, quantity, imag
      * Method sets date of product creation
      */
     this.setDate = function (date) {
-        this.date = Date.parse(date);
+        let temp = Date.parse(date); 
+        if (isNaN(temp)) {
+            console.log("Please use standard date patterns, as: YYYY-MM-DDTHH:mm:ss")
+        } else {
+            this.date = temp;
+        }
     }
 
     /**
