@@ -209,7 +209,7 @@ function Product(id, name, description, price, brand, activeSize, quantity, imag
                 return this.images[i];
             }
         }
-        return null;
+        return undefined;
     }
 
     /**
