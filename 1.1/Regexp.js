@@ -31,7 +31,6 @@ function Validator() {
      */
     this.validatePassword = function (password) {
         if (password.length < 8) return false;
-        return password.match(/[A-Z].*[a-z].*\d|[A-Z].*\d.*[a-z]|[a-z].*[A-Z].*\d|/ +
-            /[a-z].*\d.*[A-Z]|\d.*[a-z].*[A-Z]|\d.*[A-Z].*[a-z]/) !== null;
+        return password.match(/(?=.*[A-Z])(?=.*[a-z])(?=.*\d).*/) !== null;
     }
 }
