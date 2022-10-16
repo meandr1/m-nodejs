@@ -103,7 +103,7 @@ function Product(id, name, description, price, brand, activeSize, quantity, imag
      * Method gets active product size
      */
     this.getActiveSize = function () {
-        return this.activeSize;
+        return this.activeSize.toUpperCase();
     }
 
     /**
