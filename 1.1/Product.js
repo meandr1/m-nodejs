@@ -1,3 +1,4 @@
+
 /**
  * Constructor describes some product with its properties and methods
  * @param {String} id - product ID
