@@ -1,6 +1,18 @@
-
+/**
+ * This class describes some product with its properties and methods
+ */
 class AbstractProduct {
 
+    /**
+     * Constructor describes all product properties
+     * @param {String} id - product ID
+     * @param {String} name - product name
+     * @param {String} description - product description
+     * @param {number} price - product price
+     * @param {String} brand - product brand
+     * @param {number} quantity - product quantity
+     * @param {Array [String]} images - array of product images
+     */
     constructor(id, name, description, price, brand, quantity, images) {
         this.id = id;
         this.name = name;
@@ -11,6 +23,28 @@ class AbstractProduct {
         this.date = Date.now();
         this.images = images.map(item => item.toLowerCase());
         this.reviews = [];
+    }
+}
+
+/**
+ * Method represents universal getter or setter of all AbstractProduct properties.
+ * If value parameter is defined property will be set to a new value
+ * If value parameter is undefined, method will return property value
+ * @param {String} property is a property of what we have to receive or define
+ * @param {any} value is a new value of property we want to redefine
+ * @returns value of property in case of undefined value parameter
+ *          otherwise returns true or false in case of successful or unsuccessful parameter definition
+ */
+AbstractProduct.prototype.universalGetterSetter = function (property, value) {
+    if (value === undefined) {
+        if (property in this) {
+            return Object.getOwnPropertyDescriptor(this, property).value;
+        } else return undefined;
+    } else {
+        if (property in this) {
+            Object.defineProperty(this, property, { value: value });
+            return true;
+        } else return false;
     }
 }
 
@@ -236,17 +270,38 @@ AbstractProduct.prototype.getAverageRating = function () {
     return sumRating / items;
 }
 
-AbstractProduct.prototype.getPriceForQuantity = function(quantity){
-    return `$${this.getPrice()*quantity}`;
+/**
+ * Method calculates total cost of several number of products
+ * @param {number} quantity of products
+ * @returns total cost of products witch quantity defined in method parameter
+ */
+AbstractProduct.prototype.getPriceForQuantity = function (quantity) {
+    return `$${this.getPrice() * quantity}`;
 }
 
-AbstractProduct.prototype.getFullInformation = function(){
-    return `ID: ${this.id}; Name: ${this.name}; Description: ${this.description}; Price: ${this.price}; Brand: ${this.brand};` + 
-    ` Quantity: ${this.quantity}; Date: ${(new Date(this.date)).toLocaleString()}; \nImages: ${this.images.join("; ")}\n`+
-    `Reviews:\n\t${this.reviews.join("\n\t")}`;
+/**
+ * Method returns full information about product in String and user-friendly format
+ */
+AbstractProduct.prototype.getFullInformation = function () {
+    return `ID: ${this.id}; Name: ${this.name}; Description: ${this.description}; Price: ${this.price}; Brand: ${this.brand};` +
+        ` Quantity: ${this.quantity}; Date: ${(new Date(this.date)).toLocaleString()}; \nImages: ${this.images.join("; ")}\n` +
+        `Reviews:\n\t${this.reviews.join("\n\t")}`;
 }
 
+/**
+ * Class describes a Review object 
+ */
 class Review {
+    /**
+     * Constructor defines a Review object properties
+     * @param {String} id - id of current review
+     * @param {String} author - author of review
+     * @param {String} comment - comment of product
+     * @param {number} service - user rate of service
+     * @param {number} price - user rate of price
+     * @param {number} value - user rate of value
+     * @param {number} quality - user rate of quality
+     */
     constructor(id, author, comment, service, price, value, quality) {
         this.id = id;
         this.author = author;
@@ -311,9 +366,25 @@ function sortProducts(products, sortRule) {
     }
 }
 
-class Clothes extends AbstractProduct{
+/**
+ * Clothes class extends AbstractProduct class with its own properties
+ */
+class Clothes extends AbstractProduct {
 
-    constructor (id, name, description, price, brand, quantity, images, activeSize, material, color){
+    /**
+     * Constructor describes all clothes properties
+     * @param {String} id - product ID
+     * @param {String} name - product name
+     * @param {String} description - product description
+     * @param {number} price - product price
+     * @param {String} brand - product brand
+     * @param {number} quantity - product quantity
+     * @param {Array [String]} images - array of product images
+     * @param {String} activeSize - active clothes size 
+     * @param {String} material - clothes material
+     * @param {String} color - clothes color
+     */
+    constructor(id, name, description, price, brand, quantity, images, activeSize, material, color) {
         super(id, name, description, price, brand, quantity, images);
         this.activeSize = activeSize;
         this.material = material;
@@ -326,28 +397,28 @@ class Clothes extends AbstractProduct{
 /**
  * Method sets product material
  */
- Clothes.prototype.setMaterial = function (material) {
+Clothes.prototype.setMaterial = function (material) {
     this.material = material;
 }
 
 /**
  * Method gets product material
  */
- Clothes.prototype.getMaterial = function () {
+Clothes.prototype.getMaterial = function () {
     return this.material;
 }
 
 /**
  * Method sets color of product
  */
- Clothes.prototype.setColor = function (color) {
+Clothes.prototype.setColor = function (color) {
     this.color = color;
 }
 
 /**
  * Method gets color of product
  */
- Clothes.prototype.getColor = function () {
+Clothes.prototype.getColor = function () {
     return this.color;
 }
 
@@ -361,14 +432,14 @@ Clothes.prototype.setActiveSize = function (activeSize) {
 /**
  * Method gets active product size
  */
- Clothes.prototype.getActiveSize = function () {
+Clothes.prototype.getActiveSize = function () {
     return this.activeSize.toUpperCase();
 }
 
 /**
  * Method adds size to product sizes array
  */
- Clothes.prototype.addSize = function (size) {
+Clothes.prototype.addSize = function (size) {
     size = size.toUpperCase();
     if (!this.sizes.includes(size)) {
         this.sizes.push(size);
@@ -378,7 +449,7 @@ Clothes.prototype.setActiveSize = function (activeSize) {
 /**
  * Method deletes size from product sizes array
  */
- Clothes.prototype.deleteSize = function (size) {
+Clothes.prototype.deleteSize = function (size) {
     size = size.toUpperCase();
     if (this.sizes.includes(size)) {
         this.sizes.splice(this.sizes.indexOf(size), 1);
@@ -388,13 +459,28 @@ Clothes.prototype.setActiveSize = function (activeSize) {
 /**
  * Method gets an array of product sizes
  */
- Clothes.prototype.getSizes = function () {
+Clothes.prototype.getSizes = function () {
     return this.sizes;
 }
 
-class Electronics extends AbstractProduct{
+/**
+ * Electronics class extends AbstractProduct class with its own properties
+ */
+class Electronics extends AbstractProduct {
 
-    constructor (id, name, description, price, brand, quantity, images, warranty, power){
+    /**
+     * Constructor describes all electronics properties
+     * @param {String} id - product ID
+     * @param {String} name - product name
+     * @param {String} description - product description
+     * @param {number} price - product price
+     * @param {String} brand - product brand
+     * @param {number} quantity - product quantity
+     * @param {Array [String]} images - array of product images
+     * @param {number} warranty - warranty of electronics products
+     * @param {number} power - power of electronics products
+     */
+    constructor(id, name, description, price, brand, quantity, images, warranty, power) {
         super(id, name, description, price, brand, quantity, images);
         this.warranty = warranty;
         this.power = power;
@@ -405,38 +491,27 @@ class Electronics extends AbstractProduct{
 /**
  * Method sets product warranty
  */
- Electronics.prototype.setWarranty = function (warranty) {
+Electronics.prototype.setWarranty = function (warranty) {
     this.warranty = warranty;
 }
 
 /**
  * Method gets product warranty
  */
- Electronics.prototype.getWarranty = function () {
+Electronics.prototype.getWarranty = function () {
     return this.warranty;
 }
 
 /**
  * Method sets product power
  */
- Electronics.prototype.setPower = function (power) {
+Electronics.prototype.setPower = function (power) {
     this.power = power;
 }
 
 /**
  * Method gets product power
  */
- Electronics.prototype.getPower = function () {
+Electronics.prototype.getPower = function () {
     return this.power;
 }
-
-
-AbstractProduct.prototype.getterSetter = function(property){
-    
-    console.log(property);
-}
-
-
-let e = new Clothes("1","wed","asdasdf adcf",45,"asd",5,["sdsd"],"l","sd","ye");
-e.getterSetter({id:""});
-console.log(e.getId());
