@@ -391,7 +391,6 @@ class Clothes extends AbstractProduct {
         this.color = color;
         this.sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
     }
-
 }
 
 /**
@@ -485,7 +484,6 @@ class Electronics extends AbstractProduct {
         this.warranty = warranty;
         this.power = power;
     }
-
 }
 
 /**
