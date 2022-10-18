@@ -21,7 +21,7 @@ class AbstractProduct {
         this.brand = brand;
         this.quantity = parseInt(quantity);
         this.date = Date.now();
-        this.images = images.map(item => item.toLowerCase());
+        this.images = images ? images.map(item => item.toLowerCase()): [];
         this.reviews = [];
     }
 }
