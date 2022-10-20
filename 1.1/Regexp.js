@@ -30,7 +30,6 @@ function Validator() {
      * @returns true in case of correct password, otherwise - false
      */
     this.validatePassword = function (password) {
-        if (password.length < 8) return false;
-        return password.match(/(?=.*[A-Z])(?=.*[a-z])(?=.*\d).*/) !== null;
+        return password.match(/(?=.*[A-Z])(?=.*[a-z])(?=.*\d).{8,}/) !== null;
     }
 }
