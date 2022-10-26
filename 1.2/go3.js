@@ -13,7 +13,6 @@ function readHttpLikeInput() {
             was10 = 0;
         res += new String(buffer);
     }
-
     return res;
 }
 
@@ -33,16 +32,16 @@ ${body && body.body || body}`);
 
 function processHttpRequest($method, $uri, $headers, $body) {
     let num;
-    try{
+    try {
         num = $uri.split("=")[1].split(" ")[0].split(",").reduce((a, b) => +a + +b)
-    } catch(err){
+    } catch (err) {
         num = undefined
     }
     let newBody = $body && $body.body || num;
-    if ($method === "GET" && num) {
-        outputHttpResponse(200, "OK", $headers, newBody);
-    } else if (!$uri.startsWith("/sum")) {
+    if (!$uri.startsWith("/sum")) {
         outputHttpResponse(404, "Not Found", $headers, "Not Found");
+    } else if ($method === "GET" && num) {
+        outputHttpResponse(200, "OK", $headers, newBody);
     } else {
         outputHttpResponse(400, "Bad Request", $headers, "Bad Request");
     }
