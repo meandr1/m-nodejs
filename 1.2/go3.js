@@ -32,14 +32,19 @@ ${body && body.body || body}`);
 }
 
 function processHttpRequest($method, $uri, $headers, $body) {
-    let num = $uri.includes("=") ? $uri.split("=")[1].split(" ")[0].split(",").reduce((a, b) => +a + +b) : undefined
+    let num;
+    try{
+        num = $uri.split("=")[1].split(" ")[0].split(",").reduce((a, b) => +a + +b)
+    } catch(err){
+        num = undefined
+    }
     let newBody = $body && $body.body || num;
-    if ($method === "GET" && num === 10) {
+    if ($method === "GET" && num) {
         outputHttpResponse(200, "OK", $headers, newBody);
     } else if (!$uri.startsWith("/sum")) {
-        outputHttpResponse(404, "Not Found", $headers, newBody);
+        outputHttpResponse(404, "Not Found", $headers, "Not Found");
     } else {
-        outputHttpResponse(400, "Bad Request", $headers, newBody);
+        outputHttpResponse(400, "Bad Request", $headers, "Bad Request");
     }
 }
 
