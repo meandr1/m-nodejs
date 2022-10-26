@@ -25,28 +25,35 @@ function outputHttpResponse(statusCode, statusMessage, headers, body) {
     console.log(`HTTP/1.1 ${statusCode} ${statusMessage}
 Date: ${new Date().toString()}
 Server: ${server}
+Content-Length: ${((body?.body || body) + "").length}
 Connection: ${connection}
 Content-Type: ${contentType}
-Content-Length: ${((body?.body || body) + "").length}
 
 ${body?.body || body}`);
 }
 
 function processHttpRequest($method, $uri, $headers, $body) {
-    let num;
-    try {
-        num = $uri.split("=")[1].split(" ")[0].split(",").reduce((a, b) => +a + +b)
-    } catch (err) {
-        num = undefined
-    }
-    let newBody = $body?.body || num;
-    if (!$uri.startsWith("/sum")) {
+
+    if ($method !== "POST" || $uri !== "/api/checkLoginAndPassword" ||
+        $headers['Content-Type'] !== "application/x-www-form-urlencoded") {
         outputHttpResponse(404, "Not Found", $headers, "Not Found");
-    } else if ($method === "GET" && num) {
-        outputHttpResponse(200, "OK", $headers, newBody);
-    } else {
-        outputHttpResponse(400, "Bad Request", $headers, "Bad Request");
     }
+
+    let [log, pass] = $body.split("&").map(item => item.split("=")[1])
+    let db
+    try {
+        db = require("fs").readFileSync(__dirname + "/passwords.txt").toString()
+    } catch (error) {
+        outputHttpResponse(500, "Internal Server Error", $headers, 'Internal Server Error');
+        return;
+    }
+    for (const pair of db.split("\r\n")) {
+        if (pair === `${log}:${pass}`) {
+            outputHttpResponse(200, "OK", $headers, '<h1 style="color:green">FOUND</h1>');
+            return;
+        }
+    }
+    outputHttpResponse(204, "OK", $headers, '<h1 style="color:red">NOT FOUND</h1>');
 }
 
 function parseTcpStringAsHttpRequest(string) {
