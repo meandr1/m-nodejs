@@ -1,0 +1,59 @@
+.box {
+    background-color: black;
+    height: 100px;
+    width: 100px;
+    margin: 10px;
+}
+
+#green-rect {
+    background-color: green;
+    height: 20px;
+    width: 50px;
+    margin-left: 10px;
+    display: none;
+}
+
+#yellow-box {
+    background-color: yellow;
+    height: 100px;
+    width: 100px;
+    margin: 10px;
+    margin-top: 25px;
+}
+
+#red-box {
+    background-color: red;
+    height: 50px;
+    width: 50px;
+    margin: 10px;
+    margin-top: 25px;
+    display: none;
+    position: absolute;
+    left: 130px;
+    top: -15px;
+}
+
+.red-square-ctrl {
+    margin-top: 25px;
+    margin-bottom: 40px;
+}
+
+.hidden {
+    display: none;
+}
+
+span {
+    display: flex;
+}
+
+img {
+    width: 200px;
+}
+
+#mouseCoord {
+    position: absolute;
+    right: 40px;
+    top: 20px;
+    border: 2px solid black;
+    padding: 5px;
+}

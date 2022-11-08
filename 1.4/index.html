@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Chapter 1.4 - test page</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <span>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+    </span>
+    <input type="button" value="Del with JS+CSS" onclick="blinkSquare()">
+
+    <br><br>
+    <span>
+        <input type="text" id="selector" onfocus="greenRect(true)" oninput="greenRect(false)">
+        <input type="button" value="blink item" onclick="blinkItem(document.getElementById('selector').value)">
+        <div id="green-rect"></div>
+    </span>
+
+    <div id="yellow-box"></div>
+
+    <div style="position: relative;">
+
+        <button class="red-square-ctrl">Red square control</button>
+        <div id="red-box"></div>
+    </div>
+
+    <textarea id="img-chooser" rows="6" cols="40"></textarea>
+    <br>
+    <input type="button" value="Add image" onclick="addImage(document.getElementById('img-chooser').value)">
+    <hr>
+
+    <div id="mouseCoord"></div>
+
+    <script>
+
+
+        let coord = document.getElementById("mouseCoord")
+        let pos = "Position: unknown"
+        navigator.geolocation.getCurrentPosition((position) => {
+            pos = `Ш: ${position.coords.latitude} Д: ${position.coords.longitude}`;
+        });
+        
+        document.addEventListener("mousemove", (me) => {
+            coord.innerHTML = `X:${me.clientX}, Y:${me.clientY} Lang = ${navigator.language}<br>${pos}`
+        });
+
+        function addImage(src) {
+            let paths = src.split("\n")
+            for (let i = 0; i < paths.length; i++) {
+                let element = document.createElement("img")
+                element.setAttribute("src", paths[i])
+                document.body.appendChild(element)
+            }
+        }
+
+        function greenRect(show) {
+            let rect = document.getElementById("green-rect");
+            if (show) {
+                rect.style.display = "block"
+            } else {
+                rect.style.display = "none"
+            }
+        }
+
+        document.querySelector(".red-square-ctrl").addEventListener("mouseover", showRedSqr);
+        document.querySelector(".red-square-ctrl").addEventListener("mouseout", hideRedSqr);
+
+        function showRedSqr() {
+            document.querySelector("#red-box").style.display = 'block';
+        }
+
+        function hideRedSqr() {
+            document.querySelector("#red-box").style.display = 'none';
+        }
+
+        document.getElementById("yellow-box").onclick = yellowAlert;
+
+        function yellowAlert() {
+            alert("HELLO")
+            document.getElementById("yellow-box").onclick = delBox;
+        }
+
+        function delBox() {
+            document.getElementById("yellow-box").style.display = 'none';
+        }
+
+        function blinkItem(item) {
+            let itemsList = document.querySelectorAll(item)
+            for (let i = 0; i < itemsList.length; i++) {
+                if (itemsList[i].style.display === 'none') {
+                    itemsList[i].style.display = 'block'
+                } else {
+                    itemsList[i].style.display = 'none'
+                }
+            }
+        }
+
+        function blinkSquare() {
+            let box = document.getElementsByClassName('box')
+            let name = box[0].className
+            if (name.includes("hidden")) {
+                Array.prototype.map.call(box, (item) => item.classList.remove('hidden'))
+            } else {
+                Array.prototype.map.call(box, (item) => item.classList.add('hidden'))
+            }
+        }
+
+    </script>
+</body>
+
+</html>
