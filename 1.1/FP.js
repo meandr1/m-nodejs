@@ -29,16 +29,15 @@ let someText = "Столица и самый большой по населен�
 function parser(csv) {
     let obj = csv
         .split("\n")
-        .filter(item => ((item && !item.startsWith("#")) ? true : false))
+        .filter(item => ((item && !item.startsWith("#"))))
         .map((item) => (item = item.split(","), { x: +item[0], y: +item[1], name: item[2], population: +[item[3]] }))
         .sort((a, b) => (b.population - a.population))
         .slice(0, 10)
-        .reduce((obj, item, index) => ({ ...obj, [item.name]: { population: item.population, rating: (index + 1) } }), {})
+        .reduce((obj, item, index) => ({ ...obj, [item.name]: { population: item.population, rating: (index + 1) } }), {});
     return (text) => {
-        let cities = new RegExp (Object.keys(obj).join("|"),"gi")
-        return text.replace(cities, (match) => {
-            return `${match} (${obj[match]['rating']} место в ТОП-10 самых крупных городов Украины, население ${obj[match]['population']} человек)`
-        })
+        let cities = new RegExp (Object.keys(obj).join("|"),"gi");
+        return text.replace(cities, (match) => (`${match} (${obj[match]['rating']} место в ТОП-10 самых крупных `+
+        `городов Украины, население ${obj[match]['population']} человек)`));
     }
 }
 
