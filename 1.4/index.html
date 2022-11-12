@@ -66,43 +66,26 @@
     <form><input type="submit" value="GO"></form>
     <hr>
 
-    <form ondrop="dropFile(event)" id="drag-area">
+    <form  id="form-area">
         <label class="file">
-            upload file
+            drag file here:
             <input id="input-file" type="file">
         </label>
     </form>
 
-
-
     <script>
 
-        document.addEventListener("dragover", showFrame)
-        document.addEventListener("dragleave", hideFrame)
-        document.addEventListener("drop", hideFrame)
-
+        document.addEventListener("dragover", (e)=>e.preventDefault())
 
         document.getElementById("input-file").addEventListener("change", () => {
-            document.querySelector(".file").classList.add("file-active")
+            if (document.getElementById("input-file").files.length){
+                document.querySelector(".file").classList.add("file-active")
+            } else{
+                document.querySelector(".file").classList.remove("file-active")
+            }
         })
 
-
-        function showFrame(event) {
-            document.getElementById("drag-area").classList.add("show-frame")
-            event.preventDefault();
-        }
-        function hideFrame() {
-            document.getElementById("drag-area").classList.remove("show-frame")
-        }
-
-        function dropFile(event) {
-            event.preventDefault();
-            let file = event.dataTransfer.files
-           // document.getElementById("input-file").files = file
-            console.log(document.getElementById("input-file").files)
-        }
-
-        addEventListener('submit', (e) => {
+        document.addEventListener('submit', (e) => {
             e.preventDefault();
         })
 
