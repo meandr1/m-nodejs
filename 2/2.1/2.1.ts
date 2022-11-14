@@ -1,12 +1,12 @@
 // 1. 
 
-function getFirstWord(a: string): number {
+function getFirstWord1(a: string): number {
     return a.split(/ +/)[0].length;
 }
 
 // 2. 
 
-function getUserNamings(a: { name: string; surname: string }): { fullname: string; initials: string } {
+function getUserNamings1(a: { name: string; surname: string }): { fullname: string; initials: string } {
     return {
         fullname: a.name + " " + a.surname,
         initials: a.name[0] + "." + a.surname[0]
@@ -16,7 +16,7 @@ function getUserNamings(a: { name: string; surname: string }): { fullname: strin
 // 3. 
 
 // <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining>
-function getAllProductNames(a: { products: [{ name: string }] }): string[] {
+function getAllProductNames1(a: { products: { name: string }[] }): string[] {
     return a?.products?.map(prod => prod?.name) || [];
 }
 
@@ -24,15 +24,15 @@ function getAllProductNames(a: { products: [{ name: string }] }): string[] {
 
 // easy way is using 'as' keyword
 // hard way is ?...
-function hey(a) {
+function hey1(a: { name: () => string, cuteness: number } | { name: () => string, coolness: number }): string {
     return "hey! i'm " + a.name();
 }
-hey({ name: () => "roma", cuteness: 100 })
-hey({ name: () => "vasya", coolness: 100 })
+hey1({ name: () => "roma", cuteness: 100 })
+hey1({ name: () => "vasya", coolness: 100 })
 
 // 4.2
 
-function hey2(abstractPet) {
+function hey2(abstractPet: {name:()=>string}): string {
     return "hey! i'm " + abstractPet.name();
 }
 let a = new Cat("myavchik", true)
@@ -42,7 +42,7 @@ hey2(b)
 
 // 4.3
 
-function hey3(a) {
+function hey3(a: { name: () => string, type: "cat", cuteness: number } | { name: () => string, type: "dog", coolness: number }): string {
     return "hey! i'm " + a.name()
         + (a.type === "cat" ? ("cuteness: " + a.cuteness) : ("coolness: " + a.coolness))
 }
@@ -52,7 +52,7 @@ hey3({ name: () => "vasya", type: "dog", coolness: 100 })
 // 5.
 
 // google for Record type
-function stringEntries(a) {
+function stringEntries1(a: []|{}): []|{} {
     return Array.isArray(a) ? a : Object.keys(a)
 }
 
@@ -61,10 +61,10 @@ function stringEntries(a) {
 // you don't know Promises and async/await yet. Or do you? 
 // ....can be hard, don't worry and SKIP if you do not know how to do it
 
-async function world(a) {
+async function world1(a:number) {
     return "*".repeat(a)
 }
-const hello = async () => {
-    return await world(10)
+const hello1 = async () => {
+    return await world1(10)
 }
-hello().then(r => console.log(r)).catch(e => console.log("fail"))
+hello1().then(r => console.log(r)).catch(e => console.log("fail"))
