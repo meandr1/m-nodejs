@@ -35,10 +35,10 @@ hey1({ name: () => "vasya", coolness: 100 })
 function hey2(abstractPet: {name:()=>string}): string {
     return "hey! i'm " + abstractPet.name();
 }
-let a = new Cat("myavchik", true)
-let b = new Dog("gavchik", 333)
-hey2(a)
-hey2(b)
+// let a = new Cat("myavchik", true)
+// let b = new Dog("gavchik", 333)
+// hey2(a)
+// hey2(b)
 
 // 4.3
 
