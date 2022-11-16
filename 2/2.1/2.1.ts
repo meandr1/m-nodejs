@@ -52,7 +52,7 @@ hey3({ name: () => "vasya", type: "dog", coolness: 100 })
 // 5.
 
 // google for Record type
-function stringEntries1(a: []|{}): []|{} {
+function stringEntries1(a: []|object): []|object {
     return Array.isArray(a) ? a : Object.keys(a)
 }
 
@@ -61,10 +61,10 @@ function stringEntries1(a: []|{}): []|{} {
 // you don't know Promises and async/await yet. Or do you? 
 // ....can be hard, don't worry and SKIP if you do not know how to do it
 
-async function world1(a:number) {
+async function world1(a:number): Promise<string> {
     return "*".repeat(a)
 }
-const hello1 = async () => {
+const hello1: ()=> Promise<string> = async () => {
     return await world1(10)
 }
 hello1().then(r => console.log(r)).catch(e => console.log("fail"))
