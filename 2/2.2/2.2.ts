@@ -81,7 +81,7 @@ async function getFemaleUser2(host: string) {
 getFemaleUser2(hostForUsers)
 
 //5
-// Не уверен, что я все правильно понял, что нужно сделать в этом задании
+// Не уверен, что я все правильно понял что нужно сделать в этом задании
 
 function firstTask5(callBack: (ip: string) => void, ip: string) {
     callBack(ip)
