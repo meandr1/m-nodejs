@@ -2,14 +2,14 @@ import express from 'express'
 import path from 'path'
 import bodyParser from 'body-parser'
 import cors from 'cors'
-import { MongoClient } from "mongodb"
+import { MongoClient, Collection } from "mongodb"
 
 const app = express()
 const jsonParser = bodyParser.json()
 const port: number = 3005
-const client = new MongoClient("mongodb://127.0.0.1:27017/")
-const todoList = client.db("todos").collection("items")
-const counterValue = client.db("todos").collection("counter")
+const client: MongoClient = new MongoClient("mongodb://127.0.0.1:27017/")
+const todoList: Collection = client.db("todos").collection("items")
+const counterValue: Collection = client.db("todos").collection("counter")
 let todoCounter: number;
 
 app.use(express.static(path.join(__dirname, '../static')))
