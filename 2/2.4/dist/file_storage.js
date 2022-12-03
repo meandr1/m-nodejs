@@ -23,8 +23,8 @@ try {
     todoCounter = +fs_1.default.readFileSync(counterPath).toString().split("=")[1];
 }
 catch (error) {
-    fs_1.default.writeFileSync(counterPath, `todoCounter=1`);
-    todoCounter = 1;
+    fs_1.default.writeFileSync(counterPath, `todoCounter=0`);
+    todoCounter = 0;
 }
 let todoList = { items: [] };
 try {
@@ -41,20 +41,16 @@ app.get('/api/v1/items', (req, res) => {
     res.send(JSON.stringify(todoList));
 });
 app.post('/api/v1/items', jsonParser, (req, res) => {
-    todoList.items.push({ id: todoCounter++, text: req.body.text, checked: false });
+    todoList.items.push({ id: ++todoCounter, text: req.body.text, checked: false });
     updateData();
-    res.send(JSON.stringify({ id: todoCounter - 1 }));
+    res.send(JSON.stringify({ id: todoCounter }));
 });
 app.put('/api/v1/items', jsonParser, (req, res) => {
     let newStatus = req.body.checked;
     let newText = req.body.text;
     let index = todoList.items.findIndex(item => item.id === req.body.id);
-    if (newStatus !== todoList.items[index].checked) {
-        todoList.items[index].checked = newStatus;
-    }
-    else if (newText !== todoList.items[index].text) {
-        todoList.items[index].text = newText;
-    }
+    todoList.items[index].checked = newStatus;
+    todoList.items[index].text = newText;
     updateData();
     res.send(JSON.stringify({ ok: true }));
 });

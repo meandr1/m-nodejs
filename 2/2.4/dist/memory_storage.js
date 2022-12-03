@@ -15,7 +15,7 @@ app.use((0, cors_1.default)({
     origin: 'http://127.0.0.1:3005',
     credentials: true
 }));
-let todoCounter = 1;
+let todoCounter = 0;
 const todoList = { items: [] };
 app.listen(port, () => {
     console.log(`TODO's server listening on port ${port}`);
@@ -24,19 +24,15 @@ app.get('/api/v1/items', (req, res) => {
     res.send(JSON.stringify(todoList));
 });
 app.post('/api/v1/items', jsonParser, (req, res) => {
-    todoList.items.push({ id: todoCounter++, text: req.body.text, checked: false });
-    res.send(JSON.stringify({ id: todoCounter - 1 }));
+    todoList.items.push({ id: ++todoCounter, text: req.body.text, checked: false });
+    res.send(JSON.stringify({ id: todoCounter }));
 });
 app.put('/api/v1/items', jsonParser, (req, res) => {
     let newStatus = req.body.checked;
     let newText = req.body.text;
     let index = todoList.items.findIndex(item => item.id === req.body.id);
-    if (newStatus !== todoList.items[index].checked) {
-        todoList.items[index].checked = newStatus;
-    }
-    else if (newText !== todoList.items[index].text) {
-        todoList.items[index].text = newText;
-    }
+    todoList.items[index].checked = newStatus;
+    todoList.items[index].text = newText;
     res.send(JSON.stringify({ ok: true }));
 });
 app.delete('/api/v1/items', jsonParser, (req, res) => {
