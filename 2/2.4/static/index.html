@@ -13,7 +13,7 @@ README:
     - OR under mac/linux just use: python -m SimpleHTTPServer 8080
  
 -->
-<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<html lang="ru" xmlns:v-on="http://www.w3.org/1999/xhtml">
 
 <head>
     <meta charset="UTF-8">
@@ -290,7 +290,6 @@ README:
                 <task @task_del="deleteTask(task.id)" @task_edit="editTask(index)"
                     @task_done="markAsDone(index, task.id)" @save="save(index, task.id)" @disable="disable(index)"
                     :data="task" :index="index+1" v-for="(task, index) in tasks" :key="index"></task>
-
                 <hr>
                 <button @click="logout" class="logout">Выйти &#128682;</button>
             </div>

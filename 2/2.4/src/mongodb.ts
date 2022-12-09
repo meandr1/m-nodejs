@@ -20,49 +20,64 @@ app.use(
     })
 );
 
-(async () => {
-    await client.connect()
-        .then(() => {
-            console.log('DB connection established');
-            counterValue.find().next().then((cnt) => {
-                if (cnt === null) {
-                    todoCounter = 0
-                    counterValue.insertOne({ counter: 0 })
-                } else {
-                    todoCounter = cnt.counter
-                }
-            });
-            app.listen(port, () => {
-                console.log(`TODO's server listening on port ${port}`)
-            });
+client.connect()
+    .then(() => {
+        console.log('DB connection established');
+        counterValue.find().next().then((cnt) => {
+            if (cnt === null) {
+                todoCounter = 0
+                counterValue.insertOne({ counter: 0 })
+            } else {
+                todoCounter = cnt.counter
+            }
         });
-})();
+        app.listen(port, () => {
+            console.log(`TODO's server listening on port ${port}`)
+        });
+    });
+
 
 app.get('/api/v1/items', async (req, res) => {
-    res.send({ items: await todoList.find().toArray() })
+    try {
+        res.send({ items: await todoList.find().toArray() })
+    } catch (err) {
+        res.status(500).send({ "error": `${(err as Error).message}` })
+    }
 });
 
 app.post('/api/v1/items', jsonParser, (req, res) => {
-    todoList.insertOne({ id: ++todoCounter, text: req.body.text, checked: false }).then(insertRes => {
-        counterValue.updateOne({ counter: todoCounter - 1 }, { $set: { counter: todoCounter } }).then(updateResult => {
-            if (updateResult.acknowledged && insertRes.acknowledged) res.send(JSON.stringify({ id: todoCounter }))
-            else res.sendStatus(500)
+    try {
+        todoList.insertOne({ id: ++todoCounter, text: req.body.text, checked: false }).then(insertRes => {
+            counterValue.updateOne({ counter: todoCounter - 1 }, { $set: { counter: todoCounter } }).then(updateResult => {
+                if (updateResult.modifiedCount && insertRes.acknowledged) res.send(JSON.stringify({ id: todoCounter }))
+                else res.status(500).send({ "error": "Failed to add item" })
+            })
         })
-    })
+    } catch (err) {
+        res.status(500).send({ "error": `${(err as Error).message}` })
+    }
 })
 
 app.put('/api/v1/items', jsonParser, (req, res) => {
     let newStatus: boolean = req.body.checked
     let newText: string = req.body.text
-    todoList.updateOne({ id: req.body.id }, { $set: { text: newText, checked: newStatus } }).then(updateResult => {
-        if (updateResult.acknowledged) res.send(JSON.stringify({ ok: true }))
-        else res.sendStatus(500)
-    })
+    try {
+        todoList.updateOne({ id: req.body.id }, { $set: { text: newText, checked: newStatus } }).then(updateResult => {
+            if (updateResult.modifiedCount) res.send(JSON.stringify({ ok: true }))
+            else res.status(500).send({ "error": "Failed to update item" })
+        })
+    } catch (err) {
+        res.status(500).send({ "error": `${(err as Error).message}` })
+    }
 })
 
 app.delete('/api/v1/items', jsonParser, (req, res) => {
-    todoList.deleteOne({ id: req.body.id }).then(delResult => {
-        if (delResult.acknowledged) res.send(JSON.stringify({ ok: true }))
-        else res.sendStatus(500)
-    })
+    try {
+        todoList.deleteOne({ id: req.body.id }).then(delResult => {
+            if (delResult.deletedCount) res.send(JSON.stringify({ ok: true }))
+            else res.status(500).send({ "error": "Failed to delete item" })
+        })
+    } catch (err) {
+        res.status(500).send({ "error": `${(err as Error).message}` })
+    }
 })
