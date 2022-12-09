@@ -14,16 +14,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
-const body_parser_1 = __importDefault(require("body-parser"));
 const cors_1 = __importDefault(require("cors"));
 const mongodb_1 = require("mongodb");
 const app = (0, express_1.default)();
-const jsonParser = body_parser_1.default.json();
 const port = 3005;
 const client = new mongodb_1.MongoClient("mongodb://127.0.0.1:27017/");
 const todoList = client.db("todos").collection("items");
 const counterValue = client.db("todos").collection("counter");
 let todoCounter;
+app.use(express_1.default.json());
 app.use(express_1.default.static(path_1.default.join(__dirname, '../static')));
 app.use((0, cors_1.default)({
     origin: 'http://127.0.0.1:3005',
@@ -53,7 +52,7 @@ app.get('/api/v1/items', (req, res) => __awaiter(void 0, void 0, void 0, functio
         res.status(500).send({ "error": `${err.message}` });
     }
 }));
-app.post('/api/v1/items', jsonParser, (req, res) => {
+app.post('/api/v1/items', (req, res) => {
     try {
         todoList.insertOne({ id: ++todoCounter, text: req.body.text, checked: false }).then(insertRes => {
             counterValue.updateOne({ counter: todoCounter - 1 }, { $set: { counter: todoCounter } }).then(updateResult => {
@@ -68,7 +67,7 @@ app.post('/api/v1/items', jsonParser, (req, res) => {
         res.status(500).send({ "error": `${err.message}` });
     }
 });
-app.put('/api/v1/items', jsonParser, (req, res) => {
+app.put('/api/v1/items', (req, res) => {
     let newStatus = req.body.checked;
     let newText = req.body.text;
     try {
@@ -83,7 +82,7 @@ app.put('/api/v1/items', jsonParser, (req, res) => {
         res.status(500).send({ "error": `${err.message}` });
     }
 });
-app.delete('/api/v1/items', jsonParser, (req, res) => {
+app.delete('/api/v1/items', (req, res) => {
     try {
         todoList.deleteOne({ id: req.body.id }).then(delResult => {
             if (delResult.deletedCount)

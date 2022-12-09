@@ -5,14 +5,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
-const body_parser_1 = __importDefault(require("body-parser"));
 const fs_1 = __importDefault(require("fs"));
 const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
-const jsonParser = body_parser_1.default.json();
 const port = 3005;
 const counterPath = __dirname + "/counter.txt";
 const listPath = __dirname + "/todoList.json";
+app.use(express_1.default.json());
 app.use(express_1.default.static(path_1.default.join(__dirname, '../static')));
 app.use((0, cors_1.default)({
     origin: 'http://127.0.0.1:3005',
@@ -40,12 +39,12 @@ app.listen(port, () => {
 app.get('/api/v1/items', (req, res) => {
     res.send(JSON.stringify(todoList));
 });
-app.post('/api/v1/items', jsonParser, (req, res) => {
+app.post('/api/v1/items', (req, res) => {
     todoList.items.push({ id: ++todoCounter, text: req.body.text, checked: false });
     updateData();
     res.send(JSON.stringify({ id: todoCounter }));
 });
-app.put('/api/v1/items', jsonParser, (req, res) => {
+app.put('/api/v1/items', (req, res) => {
     let newStatus = req.body.checked;
     let newText = req.body.text;
     let index = todoList.items.findIndex(item => item.id === req.body.id);
@@ -54,7 +53,7 @@ app.put('/api/v1/items', jsonParser, (req, res) => {
     updateData();
     res.send(JSON.stringify({ ok: true }));
 });
-app.delete('/api/v1/items', jsonParser, (req, res) => {
+app.delete('/api/v1/items', (req, res) => {
     let index = todoList.items.findIndex(item => item.id === req.body.id);
     todoList.items.splice(index, 1);
     updateData();

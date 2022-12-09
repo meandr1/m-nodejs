@@ -1,15 +1,14 @@
 import express from 'express'
 import path from 'path'
-import bodyParser from 'body-parser'
 import fs from 'fs'
 import cors from 'cors'
 
 const app = express()
-const jsonParser = bodyParser.json()
 const port: number = 3005
 const counterPath: string = __dirname + "/counter.txt"
 const listPath: string = __dirname + "/todoList.json"
 
+app.use(express.json())
 app.use(express.static(path.join(__dirname, '../static')))
 app.use(
     cors({
@@ -43,13 +42,13 @@ app.get('/api/v1/items', (req, res) => {
     res.send(JSON.stringify(todoList))
 });
 
-app.post('/api/v1/items', jsonParser, (req, res) => {
+app.post('/api/v1/items', (req, res) => {
     todoList.items.push({ id: ++todoCounter, text: req.body.text, checked: false })
     updateData()
     res.send(JSON.stringify({ id: todoCounter }))
 })
 
-app.put('/api/v1/items', jsonParser, (req, res) => {
+app.put('/api/v1/items', (req, res) => {
     let newStatus: boolean = req.body.checked
     let newText: string = req.body.text
     let index: number = todoList.items.findIndex(item => item.id === req.body.id)
@@ -59,7 +58,7 @@ app.put('/api/v1/items', jsonParser, (req, res) => {
     res.send(JSON.stringify({ ok: true }))
 })
 
-app.delete('/api/v1/items', jsonParser, (req, res) => {
+app.delete('/api/v1/items', (req, res) => {
     let index: number = todoList.items.findIndex(item => item.id === req.body.id)
     todoList.items.splice(index, 1)
     updateData()

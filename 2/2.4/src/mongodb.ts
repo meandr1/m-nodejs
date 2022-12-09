@@ -1,17 +1,16 @@
 import express from 'express'
 import path from 'path'
-import bodyParser from 'body-parser'
 import cors from 'cors'
 import { MongoClient, Collection } from "mongodb"
 
 const app = express()
-const jsonParser = bodyParser.json()
 const port: number = 3005
 const client: MongoClient = new MongoClient("mongodb://127.0.0.1:27017/")
 const todoList: Collection = client.db("todos").collection("items")
 const counterValue: Collection = client.db("todos").collection("counter")
 let todoCounter: number;
 
+app.use(express.json())
 app.use(express.static(path.join(__dirname, '../static')))
 app.use(
     cors({
@@ -45,7 +44,7 @@ app.get('/api/v1/items', async (req, res) => {
     }
 });
 
-app.post('/api/v1/items', jsonParser, (req, res) => {
+app.post('/api/v1/items', (req, res) => {
     try {
         todoList.insertOne({ id: ++todoCounter, text: req.body.text, checked: false }).then(insertRes => {
             counterValue.updateOne({ counter: todoCounter - 1 }, { $set: { counter: todoCounter } }).then(updateResult => {
@@ -58,7 +57,7 @@ app.post('/api/v1/items', jsonParser, (req, res) => {
     }
 })
 
-app.put('/api/v1/items', jsonParser, (req, res) => {
+app.put('/api/v1/items', (req, res) => {
     let newStatus: boolean = req.body.checked
     let newText: string = req.body.text
     try {
@@ -71,7 +70,7 @@ app.put('/api/v1/items', jsonParser, (req, res) => {
     }
 })
 
-app.delete('/api/v1/items', jsonParser, (req, res) => {
+app.delete('/api/v1/items', (req, res) => {
     try {
         todoList.deleteOne({ id: req.body.id }).then(delResult => {
             if (delResult.deletedCount) res.send(JSON.stringify({ ok: true }))
