@@ -16,12 +16,12 @@ const client = new mongodb_1.MongoClient("mongodb://127.0.0.1:27017/");
 const counterValue = client.db("todos").collection("counter");
 const todoList = client.db("todos").collection("items");
 let todoCounter;
+app.use(express_1.default.json());
 app.use(express_1.default.static(path_1.default.join(__dirname, '../static')));
 app.use((0, cors_1.default)({
     origin: 'http://localhost:3005',
     credentials: true
 }));
-app.use(express_1.default.json());
 app.use((0, express_session_1.default)({
     store: new FileStore({ retries: 0 }),
     secret: 'rus - ni, pease - da',
@@ -34,8 +34,8 @@ app.use((0, express_session_1.default)({
 client.connect()
     .then(() => {
     console.log('DB connection established');
-    counterValue.find().next().then((cnt) => {
-        if (cnt === null) {
+    counterValue.findOne({ counter: Number }).then((cnt) => {
+        if (!cnt) {
             todoCounter = 0;
             counterValue.insertOne({ counter: 0 });
         }
@@ -87,15 +87,16 @@ app.post('/api/v1/logout', (req, res) => {
 app.post('/api/v1/register', (req, res) => {
     let username = req.body.login;
     let pass = req.body.pass;
+    let newUser = { username, pass, items: [] };
     todoList.findOne({ username }).then(user => {
         if (!user) {
-            todoList.insertOne({ username, pass, items: [] }).then(result => {
+            todoList.insertOne(newUser).then(result => {
                 if (result.acknowledged) {
                     req.session.username = username;
                     res.send({ ok: true });
                 }
                 else
-                    res.status(500).send({ "error": "Failed to add user" });
+                    res.status(500).send({ error: "Failed to add user" });
             });
         }
         else
@@ -103,10 +104,12 @@ app.post('/api/v1/register', (req, res) => {
     });
 });
 app.post('/api/v1/items', (req, res) => {
+    let item = { id: ++todoCounter, text: req.body.text, checked: false };
+    let newCounter = { counter: todoCounter };
     try {
-        todoList.updateOne({ username: req.session.username }, { $push: { items: { id: ++todoCounter, text: req.body.text, checked: false } } })
+        todoList.updateOne({ username: req.session.username }, { $push: { items: item } })
             .then(itemUpdateRes => {
-            counterValue.updateOne({ counter: todoCounter - 1 }, { $set: { counter: todoCounter } })
+            counterValue.updateOne({ counter: todoCounter - 1 }, { $set: newCounter })
                 .then(cntUpdateResult => {
                 if (cntUpdateResult.modifiedCount && itemUpdateRes.modifiedCount)
                     res.send({ id: todoCounter });
@@ -120,12 +123,11 @@ app.post('/api/v1/items', (req, res) => {
     }
 });
 app.put('/api/v1/items', (req, res) => {
-    let newStatus = req.body.checked;
-    let newText = req.body.text;
+    let item = req.body;
     let itemID = req.body.id;
     let username = req.session.username;
     try {
-        todoList.updateOne({ username }, { $set: { 'items.$[item]': { id: itemID, text: newText, checked: newStatus } } }, { arrayFilters: [{ "item.id": itemID }] }).then(updateResult => {
+        todoList.updateOne({ username }, { $set: { 'items.$[item]': item } }, { arrayFilters: [{ "item.id": itemID }] }).then(updateResult => {
             if (updateResult.modifiedCount)
                 res.send({ ok: true });
             else

@@ -1,4 +1,8 @@
-type Items = {
+type Counter = {
+    counter: number
+}
+
+type Item = {
     id: number,
     text: string,
     checked: boolean
@@ -7,6 +11,7 @@ type Items = {
 type User = {
     username: string
     pass: string
-    items: Items[]
+    items: Item[]
 }
-export { Items, User }
+
+export { Counter, Item, User }
