@@ -1,10 +1,11 @@
 import express, { Request, Response, Express } from 'express'
-import path from 'path'
-import cors from 'cors'
-import { MongoClient, Collection } from "mongodb"
 import session from 'express-session'
 import fileStore, { FileStore } from 'session-file-store'
-import { Counter, Item, User } from './types'
+import path from 'path'
+import cors from 'cors'
+import { setDBconnection } from './controllers/DBcontroller'
+import { getItems, editItem, deleteItem, addItem } from './controllers/itemsController'
+import { login, logout, register } from './controllers/userController'
 
 declare module 'express-session' {
     interface Session {
@@ -15,19 +16,16 @@ declare module 'express-session' {
 const FileStore: FileStore = fileStore(session)
 const app: Express = express()
 const port: number = 3005
-const client: MongoClient = new MongoClient("mongodb://127.0.0.1:27017/")
-const counterValue: Collection = client.db("todos").collection("counter")
-const todoList: Collection = client.db("todos").collection("items")
-let todoCounter: number;
 
-app.use(express.json())
-app.use(express.static(path.join(__dirname, '../static')))
+/* Uncomment this line if you want to use static front-side dir (cors will not be needed) */
+// app.use(express.static(path.join(__dirname, '../static')))
 app.use(
     cors({
-        origin: 'http://localhost:3005',
+        origin: 'http://localhost:8080',
         credentials: true
     })
 );
+app.use(express.json())
 app.use(session({
     store: new FileStore({ retries: 0 }),
     secret: 'rus - ni, pease - da',
@@ -38,115 +36,43 @@ app.use(session({
     }
 }));
 
-client.connect()
-    .then(() => {
-        console.log('DB connection established');
-        counterValue.findOne<Counter>({ counter: Number }).then((cnt) => {
-            if (!cnt) {
-                todoCounter = 0
-                counterValue.insertOne({ counter: 0 })
-            } else {
-                todoCounter = cnt.counter
-            }
-        });
-        app.listen(port, () => {
-            console.log(`TODO's server listening on port ${port}`)
-        });
+app.post('/api/v2/router', (req: Request, res: Response) => {
+    let query: string = req.query.action as string
+    switch (query) {
+        case 'login': {
+            login(req, res)
+            break;
+        }
+        case 'logout': {
+            logout(req, res)
+            break;
+        }
+        case 'register': {
+            register(req, res)
+            break;
+        }
+        case 'getItems': {
+            getItems(req, res)
+            break;
+        }
+        case 'deleteItem': {
+            deleteItem(req, res)
+            break;
+        }
+        case 'createItem': {
+            addItem(req, res)
+            break;
+        }
+        case 'editItem': {
+            editItem(req, res)
+            break;
+        }
+        default: res.status(400).send({ error: `Unknown request command: ${query}` })
+    }
+})
+
+setDBconnection().then(() => {
+    app.listen(port, () => {
+        console.log(`TODO's server listening on port ${port}`)
     });
-
-app.get('/api/v1/items', (req: Request, res: Response) => {
-    let username: string = req.session.username
-    if (username) {
-        try {
-            todoList.findOne<User>({ username }).then(user => {
-                res.send({ items: user?.items })
-            })
-        } catch (err) {
-            res.status(500).send({ "error": `${(err as Error).message}` })
-        }
-    } else {
-        res.send({ error: 'forbidden' });
-    }
-});
-
-app.post('/api/v1/login', (req: Request, res: Response) => {
-    let username: string = req.body.login
-    let pass: string = req.body.pass
-    todoList.findOne<User>({ username, pass }).then(user => {
-        if (user) {
-            req.session.username = username
-            res.send({ ok: true })
-        } else {
-            res.status(401).send({ error: "User not found or password is incorrect" })
-        }
-    })
-})
-
-app.post('/api/v1/logout', (req: Request, res: Response) => {
-    req.session.destroy(err => {
-        if (err) res.status(500).send({ "error": `${(err as Error).message}` })
-        else res.send({ ok: true })
-    })
-})
-
-app.post('/api/v1/register', (req: Request, res: Response) => {
-    let username: string = req.body.login
-    let pass: string = req.body.pass
-    let newUser: User = { username, pass, items: [] }
-    todoList.findOne<User>({ username }).then(user => {
-        if (!user) {
-            todoList.insertOne(newUser).then(result => {
-                if (result.acknowledged) {
-                    req.session.username = username
-                    res.send({ ok: true })
-                } else res.status(500).send({ error: "Failed to add user" })
-            })
-        } else res.status(403).send({ error: "User with such name already registered" })
-    })
-})
-
-app.post('/api/v1/items', (req: Request, res: Response) => {
-    let item: Item = { id: ++todoCounter, text: req.body.text, checked: false }
-    let newCounter: Counter = { counter: todoCounter }
-    try {
-        todoList.updateOne({ username: req.session.username }, { $push: { items: item } })
-            .then(itemUpdateRes => {
-                counterValue.updateOne({ counter: todoCounter - 1 }, { $set: newCounter })
-                    .then(cntUpdateResult => {
-                        if (cntUpdateResult.modifiedCount && itemUpdateRes.modifiedCount) res.send({ id: todoCounter })
-                        else res.status(500).send({ "error": "Failed to add item" })
-                    })
-            })
-    } catch (err) {
-        res.status(500).send({ "error": `${(err as Error).message}` })
-    }
-})
-
-app.put('/api/v1/items', (req: Request, res: Response) => {
-    let item: Item = req.body
-    let itemID: number = req.body.id
-    let username: string = req.session.username
-    try {
-        todoList.updateOne({ username }, { $set: { 'items.$[item]': item } },
-            { arrayFilters: [{ "item.id": itemID }] }).then(updateResult => {
-                if (updateResult.modifiedCount) res.send({ ok: true })
-                else res.status(500).send({ "error": "Failed to update item" })
-            })
-    } catch (err) {
-        res.status(500).send({ "error": `${(err as Error).message}` })
-    }
-})
-
-app.delete('/api/v1/items', (req: Request, res: Response) => {
-    let itemID: number = req.body.id
-    let username: string = req.session.username
-    try {
-        todoList.updateOne({ username }, { $pull: { items: { id: itemID } } })
-            .then(updateResult => {
-                if (updateResult.modifiedCount) res.send({ ok: true })
-                else res.status(500).send({ "error": "Failed to update item" })
-            })
-    } catch (err) {
-        res.status(500).send({ "error": `${(err as Error).message}` })
-    }
 })

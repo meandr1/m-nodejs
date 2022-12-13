@@ -181,31 +181,6 @@ README:
             transition: background .1s, color .1s;
         }
 
-        .settings {
-            margin: 20px 0;
-        }
-
-        .settings label {
-            margin: 5px 0;
-            display: block;
-        }
-
-        .settings input {
-            width: 300px;
-        }
-
-        .settings button {
-            background: white;
-            margin: 2px;
-            padding: 2px 5px;
-            box-shadow: 0 2px 4px 0 rgb(0 0 0 / 20%), 0 25px 50px 0 rgb(0 0 0 / 10%);
-        }
-
-        .settings button.selected {
-            background: #27ae60;
-            color: white;
-        }
-
         :focus {
             outline: #27ae60 dashed 2px;
         }
@@ -246,28 +221,6 @@ README:
             <h1 class="logo">Ш<span style="color: #27ae60">++</span></h1>
         </header>
         <main>
-            <div class="settings">
-                <h3>Настройки приложения:</h2>
-                    <label>
-                        Api URL:
-                        <input type="text" v-model="apiURL">
-                    </label>
-                    <div>
-                        На каком языке бекенд?
-                        <button @click="backendLanguage='PHP'"
-                            :class="{'selected': backendLanguage === 'PHP'}">PHP</button>
-                        <button @click="backendLanguage='JS'"
-                            :class="{'selected': backendLanguage === 'JS'}">JS</button>
-                    </div>
-                    <div>
-                        Версия АПИ
-                        <button @click="apiVersion='v1'" :class="{'selected': apiVersion === 'v1'}">v1</button>
-                        <button @click="apiVersion='v2'" :class="{'selected': apiVersion === 'v2'}">v2</button>
-                    </div>
-                    <div>
-                        <button @click="getTasks()" class="primary">Поехали</button>
-                    </div>
-            </div>
             <div class="wrapper login" v-if="step === 'login'">
                 <h3>Доступ к учетной записи</h1>
                     <div class="LoginInput">
@@ -294,7 +247,7 @@ README:
                 <button @click="logout" class="logout">Выйти &#128682;</button>
             </div>
             <div class="wrapper" v-else-if="step === 'error'">
-                Произошла ошибка. Откройте консоль разработчика чтоб увидеть подробности.1
+                Произошла ошибка. Откройте консоль разработчика чтоб увидеть подробности.
             </div>
 
         </main>
@@ -338,27 +291,23 @@ README:
                     editable: false,
                     checked: false
                 },
-                tasks: [
-                ],
+                tasks: [],
                 login: '',
                 pass: '',
-                backendLanguage: 'JS',
+                apiVersion: 'V2',
                 apiURL: 'http://localhost:3005/api/',
-                apiVersion: 'v1',
                 step: ''
             },
-            computed: {
-                backendSuffix() {
-                    return this.backendLanguage === 'PHP' ? '.php' : '';
-                },
+            mounted: function () {
+                this.getTasks();
             },
             methods: {
                 getTasks: function () {
-                    const route = this.apiVersion === 'v1' ? '/items' : '/router';
-                    const qs = { action: this.apiVersion === 'v1' ? '' : 'getItems' };
-                    fetch(this.apiURL + this.apiVersion + route + this.backendSuffix + '?' + new URLSearchParams(qs), {
+                    const route = '/router';
+                    const qs = { action: 'getItems' };
+                    fetch(this.apiURL + this.apiVersion + route + '?' + new URLSearchParams(qs), {
                         credentials: 'include',
-                        method: this.apiVersion === 'v1' ? 'GET' : 'POST',
+                        method: 'POST',
                     })
                         .then(res => res.json())
                         .then((response) => {
@@ -377,10 +326,10 @@ README:
                 },
                 deleteTask: function (index) {
                     let request = JSON.stringify({ id: index, });
-                    const route = this.apiVersion === 'v1' ? '/items' : '/router';
-                    const qs = { action: this.apiVersion === 'v1' ? '' : 'deleteItem' };
-                    fetch(this.apiURL + this.apiVersion + route + this.backendSuffix + '?' + new URLSearchParams(qs), {
-                        method: this.apiVersion === 'v1' ? 'DELETE' : 'POST',
+                    const route = '/router';
+                    const qs = { action: 'deleteItem' };
+                    fetch(this.apiURL + this.apiVersion + route + '?' + new URLSearchParams(qs), {
+                        method: 'POST',
                         body: request,
                         credentials: 'include',
                         headers: {
@@ -391,17 +340,17 @@ README:
                             if (response['ok'] === true) {
                                 this.getTasks()
                             } else {
-                                alert("Произошла ошибка. Посмотрите консоль разработчика чтоб увидеть подробности.2")
+                                alert("Произошла ошибка. Посмотрите консоль разработчика чтоб увидеть подробности.")
                             }
                         });
                 },
                 addTask: function () {
                     if (this.new_task.text.trim() !== '') {
                         let request = JSON.stringify({ text: this.new_task.text });
-                        const route = this.apiVersion === 'v1' ? '/items' : '/router';
-                        const qs = { action: this.apiVersion === 'v1' ? '' : 'createItem' };
-                        fetch(this.apiURL + this.apiVersion + route + this.backendSuffix + '?' + new URLSearchParams(qs), {
-                            method: this.apiVersion === 'v1' ? 'POST' : 'POST',
+                        const route = '/router';
+                        const qs = { action: 'createItem' };
+                        fetch(this.apiURL + this.apiVersion + route + '?' + new URLSearchParams(qs), {
+                            method: 'POST',
                             body: request,
                             credentials: 'include',
                             headers: {
@@ -413,17 +362,17 @@ README:
                                     this.getTasks();
                                     this.$set(this.new_task, 'text', '');
                                 } else {
-                                    alert("Произошла ошибка. Посмотрите консоль разработчика чтоб увидеть подробности.3")
+                                    alert("Произошла ошибка. Посмотрите консоль разработчика чтоб увидеть подробности.")
                                 }
                             });
                     }
                 },
                 updateTask: function (index, id) {
                     let request = JSON.stringify({ text: this.tasks[index].text, id: id, checked: this.tasks[index].checked });
-                    const route = this.apiVersion === 'v1' ? '/items' : '/router';
-                    const qs = { action: this.apiVersion === 'v1' ? '' : 'editItem' };
-                    fetch(this.apiURL + this.apiVersion + route + this.backendSuffix + '?' + new URLSearchParams(qs), {
-                        method: this.apiVersion === 'v1' ? 'PUT' : 'POST',
+                    const route = '/router';
+                    const qs = { action: 'editItem' };
+                    fetch(this.apiURL + this.apiVersion + route + '?' + new URLSearchParams(qs), {
+                        method: 'POST',
                         body: request,
                         credentials: 'include',
                         headers: {
@@ -457,9 +406,9 @@ README:
                     this.$set(this.tasks[index], 'inputedit', '');
                 },
                 logout() {
-                    const route = this.apiVersion === 'v1' ? '/logout' : '/router';
-                    const qs = { action: this.apiVersion === 'v1' ? '' : 'logout' };
-                    fetch(this.apiURL + this.apiVersion + route, {
+                    const route = '/router';
+                    const qs = { action: 'logout' };
+                    fetch(this.apiURL + this.apiVersion + route + '?' + new URLSearchParams(qs), {
                         method: this.apiVersion === 'v1' ? 'POST' : 'POST',
                         credentials: 'include',
                     }).then(res => res.json())
@@ -473,10 +422,10 @@ README:
                 logIn() {
                     if (this.login.trim() !== '' && this.pass.trim()) {
                         let params = JSON.stringify({ login: this.login, pass: this.pass });
-                        const route = this.apiVersion === 'v1' ? '/login' : '/router';
-                        const qs = { action: this.apiVersion === 'v1' ? '' : 'login' };
-                        fetch(this.apiURL + this.apiVersion + route + this.backendSuffix + '?' + new URLSearchParams(qs), {
-                            method: this.apiVersion === 'v1' ? 'POST' : 'POST',
+                        const route = '/router';
+                        const qs = { action: 'login' };
+                        fetch(this.apiURL + this.apiVersion + route + '?' + new URLSearchParams(qs), {
+                            method: 'POST',
                             credentials: 'include',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -492,7 +441,7 @@ README:
                                 } else if (response.error === 'not found') {
                                     alert('Такая комбинация логина и пароля не найдена');
                                 } else {
-                                    alert("Произошла ошибка. Посмотрите консоль разработчика чтоб увидеть подробности.4")
+                                    alert("Произошла ошибка. Посмотрите консоль разработчика чтоб увидеть подробности.")
                                 }
                             })
                     }
@@ -500,10 +449,10 @@ README:
                 register() {
                     if (this.login.trim() !== '' && this.pass.trim()) {
                         let params = JSON.stringify({ login: this.login, pass: this.pass });
-                        const route = this.apiVersion === 'v1' ? '/register' : '/router';
-                        const qs = { action: this.apiVersion === 'v1' ? '' : 'register' };
-                        fetch(this.apiURL + this.apiVersion + route + this.backendSuffix + '?' + new URLSearchParams(qs), {
-                            method: this.apiVersion === 'v1' ? 'POST' : 'POST',
+                        const route = '/router';
+                        const qs = { action: 'register' };
+                        fetch(this.apiURL + this.apiVersion + route + '?' + new URLSearchParams(qs), {
+                            method: 'POST',
                             body: params,
                             headers: {
                                 'Content-Type': 'application/json'
@@ -514,7 +463,7 @@ README:
                                 if (response.ok) {
                                     this.logIn();
                                 } else {
-                                    alert("Произошла ошибка. Посмотрите консоль разработчика чтоб увидеть подробности.5")
+                                    alert("Произошла ошибка. Посмотрите консоль разработчика чтоб увидеть подробности.")
                                 }
                             });
                     }
