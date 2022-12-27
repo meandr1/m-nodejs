@@ -1,7 +1,6 @@
 import express, { Request, Response, Express } from 'express'
 import session from 'express-session'
 import fileStore, { FileStore } from 'session-file-store'
-import path from 'path'
 import cors from 'cors'
 import { setDBconnection } from './controllers/DBcontroller'
 import { getItems, editItem, deleteItem, addItem } from './controllers/itemsController'

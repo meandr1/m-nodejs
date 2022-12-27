@@ -12,15 +12,13 @@ export function incrementCounter(): number {
 
 export async function setDBconnection() {
     await client.connect()
-        .then(() => {
-            console.log('DB connection established');
-            counterValue.findOne<Counter>({ counter: Number }).then((cnt) => {
-                if (!cnt) {
-                    todoCounter = 0
-                    counterValue.insertOne({ counter: 0 })
-                } else {
-                    todoCounter = cnt.counter
-                }
-            });
-        });
+    console.log('DB connection established');
+    counterValue.findOne<Counter>({ counter: Number }).then((cnt) => {
+        if (!cnt) {
+            todoCounter = 0
+            counterValue.insertOne({ counter: 0 })
+        } else {
+            todoCounter = cnt.counter
+        }
+    });
 }
