@@ -4,7 +4,7 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>shpp-library</title>
+    <title>Library Sh++</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="library Sh++">
@@ -14,7 +14,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" crossorigin="anonymous"/>
 
-    <link rel="shortcut icon" href="http://localhost:3000/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    
     <style>
     	.details {
 			display: none;
@@ -60,6 +61,23 @@
     <section id="main" class="main-wrapper">
         <div class="container">
             <div id="content" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+               <% if(books.length) { %> 
+                <% books.forEach(({id, name, author}) => { %>
+                <div data-book-id=<%= id %> class="book_item col-xs-6 col-sm-3 col-md-2 col-lg-2">
+                    <div class="book">
+                        <a href="http://localhost:3000/book/<%= id %>"><img src="./books-page_files/<%= id %>.jpg" alt="<%= name %>">
+                            <div data-title="<%= name %>" class="blockI" style="height: 46px;">
+                                <div data-book-title="<%= name %>" class="title size_text"><%= name %></div>
+                                <div data-book-author="<%= author %>" class="author"><%= author %></div>
+                            </div>
+                        </a>
+                        <a href="http://localhost:3000/book/<%= id %>">
+                            <button type="button" class="details btn btn-success">Читать</button>
+                        </a>
+                    </div>
+                </div>
+            <% }) %>
+            <% } %>
                 <div data-book-id="22" class="book_item col-xs-6 col-sm-3 col-md-2 col-lg-2">
                     <div class="book">
                         <a href="http://localhost:3000/book/22"><img src="./books-page_files/22.jpg" alt="СИ++ И КОМПЬЮТЕРНАЯ ГРАФИКА">
