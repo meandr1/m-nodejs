@@ -1,22 +1,23 @@
 import { Request, Response } from 'express';
 import path from 'path';
-import { Book, books2 } from '../models/book'
+import { Book } from '../models/book'
+import { pool } from '../models/database'
 
 const createPath = (fileName: string) => path.resolve(__dirname, '..', '../views', `${fileName}.ejs`)
 const count = 20;
 
-export function showAllBooks(req: Request, res: Response): void {
+export async function showAllBooks(req: Request, res: Response) {
     let offset = 0;
     if (req.query.offset) offset = +req.query.offset;
     let previous: boolean = offset > 0;
-    let next: boolean = books2.length > offset + count;
-    let books: Book[] = books2.slice(offset, count + offset);
-
-    res.render(createPath('books-page'), { books, previous, next, offset })
+    let books: Book[] = (await pool.query<Book[]>(`SELECT * FROM books;`))[0];
+    let next: boolean = books.length > offset + count;
+    books = books.slice(offset, count + offset);
+    res.render(createPath('books-page'), { books, previous, next, offset });
 }
 
-export function showBook(req: Request, res: Response): void {
+export async function showBook(req: Request, res: Response) {
     let id: number = +req.params.id;
-    let book = books2.reduce((res, book) => (res = book.id == id ? book : res));
+    let book: Book = (await pool.query<Book[]>(`SELECT * FROM books WHERE id=${id};`))[0][0];
     res.render(createPath('book-page'), { book })
 }

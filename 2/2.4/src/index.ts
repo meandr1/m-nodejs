@@ -2,7 +2,7 @@ import express, { Request, Response, Express } from 'express'
 import session from 'express-session'
 import fileStore, { FileStore } from 'session-file-store'
 import cors from 'cors'
-import path from 'path'
+import {join} from 'path'
 import { setDBconnection } from './controllers/DBcontroller'
 import { getItems, editItem, deleteItem, addItem } from './controllers/itemsController'
 import { login, logout, register } from './controllers/userController'
@@ -17,14 +17,14 @@ const FileStore: FileStore = fileStore(session)
 const app: Express = express()
 const port: number = 3005
 
-/* Uncomment this line if you want to use static front-side dir (cors will not be needed) */
-// app.use(express.static(path.join(__dirname, '../static')))
-app.use(
-    cors({
-        origin: 'http://localhost:8080',
-        credentials: true
-    })
-);
+app.use(express.static(join(__dirname, '../static')))
+/* Uncomment this lines if you want to use cors with front-side on other host (static will not be needed) */
+// app.use(
+//     cors({
+//         origin: 'http://localhost:8080',
+//         credentials: true
+//     })
+// );
 app.use(express.json())
 app.use(session({
     store: new FileStore({ retries: 0 }),

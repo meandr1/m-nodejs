@@ -1,7 +1,7 @@
 import { MongoClient, Collection } from "mongodb"
 import { Counter } from '../types'
 
-const client: MongoClient = new MongoClient("mongodb://127.0.0.1:27017/")
+const client: MongoClient = new MongoClient("mongodb://root:root@127.0.0.1:27017/")
 export const counterValue: Collection = client.db("todos").collection("counter")
 export const todoList: Collection = client.db("todos").collection("items")
 

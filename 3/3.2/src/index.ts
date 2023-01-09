@@ -1,14 +1,14 @@
 import express, { Express } from 'express';
 import { router } from './routers/router'
-import path from 'path';
+import { resolve } from 'path';
 const app: Express = express();
-const port: number = 3000;
+const PORT: number = 3000;
 
-app.use(express.static(path.resolve(__dirname, '../views')));
-app.set('view-engine', 'ejs')
+app.use(express.static(resolve(__dirname, '../views')));
+app.set('view-engine', 'ejs');
 app.use(express.json());
 app.use(router);
 
-app.listen(port, () => {
-    console.log(`Library's server listening on port ${port}`)
+app.listen(PORT, () => {
+    console.log(`Library's server listening on port ${PORT}`);
 });
