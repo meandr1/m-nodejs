@@ -18,6 +18,16 @@ export async function showAllBooks(req: Request, res: Response) {
 
 export async function showBook(req: Request, res: Response) {
     let id: number = +req.params.id;
-    let book: Book = (await pool.query<Book[]>(`SELECT * FROM books WHERE id=${id};`))[0][0];
-    res.render(createPath('book-page'), { book })
+    await pool.query(`UPDATE books SET views = views + 1 WHERE id=?;`, [id]);
+    let book: Book = (await pool.query<Book[]>(`SELECT * FROM books WHERE id=?;`, [id]))[0][0];
+    res.render(createPath('book-page'), { book });
+}
+
+export async function incrementBookWanted(req: Request, res: Response) {
+    let id: number = -1;
+    if (req.query.id) id = +req.query.id;
+    await pool.query(`UPDATE books SET wanted = wanted + 1 WHERE id=?;`, [id]);
+    let book: Book = (await pool.query<Book[]>(`SELECT * FROM books WHERE id=?;`, [id]))[0][0];
+    res.send({wanted:book.wanted});
+    // res.status(500).send({ error: 'sldkjgskldf' });
 }

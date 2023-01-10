@@ -1,5 +1,5 @@
 import express, { Router } from 'express';
-import { showAllBooks, showBook } from '../controllers/booksController';
+import { showAllBooks, showBook, incrementBookWanted } from '../controllers/booksController';
 
 export const router: Router = express.Router();
 
@@ -9,5 +9,7 @@ export const router: Router = express.Router();
 //     console.log(req.body);
 //     next();
 //   });
+
 router.get('/', showAllBooks)
 router.get('/book/:id', showBook)
+router.get('/api/v1/books/', incrementBookWanted)

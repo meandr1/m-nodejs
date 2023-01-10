@@ -6,11 +6,20 @@ export interface Book extends RowDataPacket {
     author: string,
     year: number,
     pages: number,
-    description: string
+    description: string,
+    views: number,
+    wanted: number,
+    deleted: number
 }
 
-// const bookstore = readFileSync('./sql/bookstore.sql').toString();
-// pool.execute(bookstore);
+// import {readFileSync} from 'fs'
+// import {pool} from './models/database'
+// async function createDB() {
+//     const bookstore = readFileSync('./sql/bookstore.sql').toString();
+//     await pool.query('CREATE TABLE books (id INT PRIMARY KEY, name VARCHAR(255), author VARCHAR(255), year INT, pages INT, description VARCHAR(255), views INT, wanted INT, deleted INT)')
+//     await pool.execute(bookstore);
+// }
+// createDB();
 
 
 // const books: Book[] = [
