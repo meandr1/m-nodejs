@@ -5,12 +5,14 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import { TransformInterceptor } from './common/transform.interceptor';
 import { config } from 'aws-sdk';
+import { HttpExceptionFilter } from './common/global.exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new TransformInterceptor());
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   config.update({
     accessKeyId: process.env.AWS_ACCESS_KEY,
