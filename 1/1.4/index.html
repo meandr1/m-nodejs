@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <title>Chapter 1.4 - test page</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body onload="setText()">
+    <span>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+        <div class="box"></div>
+    </span>
+    <input type="button" value="Del with JS+CSS" onclick="blinkSquare()">
+    <br>
+    <hr>
+    <span>
+        <input type="text" id="selector" onfocus="greenRect(true)" oninput="greenRect(false)">
+        <input type="button" value="blink item" onclick="blinkItem(document.getElementById('selector').value)">
+        <div id="green-rect"></div>
+    </span>
+    <hr>
+    <div id="yellow-box"></div>
+    <hr>
+    <div style="position: relative;">
+        <button class="red-square-ctrl">Red square control</button>
+        <div id="red-box"></div>
+    </div>
+    <hr>
+    <textarea id="img-chooser" rows="6" cols="40"></textarea>
+    <br>
+    <input type="button" value="Add image" onclick="addImage(document.getElementById('img-chooser').value)">
+    <hr>
+
+    <div id="mouseCoord"></div>
+
+    <span>
+        <div>localStorage:</div>
+        <div id="localStorage" contenteditable='true' onfocusout="saveText(this)"></div>
+    </span>
+    <span>
+        <div style="margin-top: 8px;">cookies: </div>
+        <div id="cookies" contenteditable='true' onfocusout="saveText(this)"></div>
+    </span>
+    <span>
+        <div style="margin-top: 5px;">sessionStorage: </div>
+        <div id="sessionStorage" contenteditable='true' onfocusout="saveText(this)"></div>
+    </span>
+
+    <a href="#" class="goup">GO UP</a>
+    <hr>
+
+    <div class="outer">
+        <div class="inner"></div>
+    </div>
+    <br>
+    <hr>
+    <div id="square" class="hidden" onclick="setSquare(false)"></div>
+    <button onclick="setSquare(true)">SHOW SQUARE</button>
+    <hr>
+    <form><input type="submit" value="GO"></form>
+    <hr>
+
+    <form  id="form-area">
+        <label class="file">
+            drag file here:
+            <input id="input-file" type="file">
+        </label>
+    </form>
+
+    <script>
+        
+
+        document.addEventListener("dragover", (e)=>e.preventDefault())
+
+        document.getElementById("input-file").addEventListener("change", () => {
+            if (document.getElementById("input-file").files.length){
+                document.querySelector(".file").classList.add("file-active")
+            } else{
+                document.querySelector(".file").classList.remove("file-active")
+            }
+        })
+
+        document.addEventListener('submit', (e) => {
+            e.preventDefault();
+        })
+
+        function setSquare(show) {
+            let square = document.getElementById("square")
+            if (show) {
+                square.classList.remove("hidden")
+                document.body.style.overflow = "hidden";
+            } else {
+                square.classList.add("hidden")
+                document.body.style.overflow = "auto";
+            }
+        }
+
+        document.querySelector(".outer").addEventListener("click", () => {
+            alert("outer");
+        })
+        document.querySelector(".inner").addEventListener("click", () => {
+            alert("inner");
+            event.stopPropagation();
+        })
+
+        addEventListener("scroll", () => {
+            if (window.pageYOffset > document.documentElement.scrollHeight - 900) {
+                document.querySelector(".goup").classList.add("show-button")
+            } else {
+                document.querySelector(".goup").classList.remove("show-button")
+            }
+        });
+
+        function setText() {
+            document.getElementById("localStorage").innerHTML = localStorage.getItem("localStorage") ?? "default text";
+            document.getElementById("sessionStorage").innerHTML = sessionStorage.getItem("sessionStorage") ?? "default text";
+            let cookieText = document.cookie.split("; ").filter(item => item.includes("divText="))[0].split("=")[1];
+            document.getElementById("cookies").innerHTML = cookieText ?? "default text";
+        }
+
+        function saveText(element) {
+            let text = element.innerHTML
+            let id = element.id
+            switch (id) {
+                case "localStorage": {
+                    localStorage.setItem(id, text);
+                    break;
+                }
+                case "cookies": {
+                    document.cookie = "divText=" + text;
+                    break;
+                }
+                case "sessionStorage": {
+                    sessionStorage.setItem(id, text);
+                    break;
+                }
+            }
+        }
+
+        let coord = document.getElementById("mouseCoord")
+        let pos = "Position: unknown"
+        navigator.geolocation.getCurrentPosition((position) => {
+            pos = `Ш: ${position.coords.latitude} Д: ${position.coords.longitude}`;
+        });
+
+        document.addEventListener("mousemove", (me) => {
+            coord.innerHTML = `X:${me.clientX}, Y:${me.clientY} Lang = ${navigator.language}<br>${pos}`
+        });
+
+        function addImage(src) {
+            let paths = src.split("\n")
+            for (let i = 0; i < paths.length; i++) {
+                let element = document.createElement("img")
+                element.setAttribute("src", paths[i])
+                document.body.appendChild(element)
+            }
+        }
+
+        function greenRect(show) {
+            let rect = document.getElementById("green-rect");
+            if (show) {
+                rect.style.display = "block"
+            } else {
+                rect.style.display = "none"
+            }
+        }
+
+        document.querySelector(".red-square-ctrl").addEventListener("mouseover", showRedSqr);
+        document.querySelector(".red-square-ctrl").addEventListener("mouseout", hideRedSqr);
+
+        function showRedSqr() {
+            document.querySelector("#red-box").style.display = 'block';
+        }
+
+        function hideRedSqr() {
+            document.querySelector("#red-box").style.display = 'none';
+        }
+
+        document.getElementById("yellow-box").onclick = yellowAlert;
+
+        function yellowAlert() {
+            alert("HELLO")
+            document.getElementById("yellow-box").onclick = delBox;
+        }
+
+        function delBox() {
+            document.getElementById("yellow-box").style.display = 'none';
+        }
+
+        function blinkItem(item) {
+            let itemsList = document.querySelectorAll(item)
+            for (let i = 0; i < itemsList.length; i++) {
+                if (itemsList[i].style.display === 'none') {
+                    itemsList[i].style.display = 'block'
+                } else {
+                    itemsList[i].style.display = 'none'
+                }
+            }
+        }
+
+        function blinkSquare() {
+            let box = document.getElementsByClassName('box')
+            let name = box[0].className
+            if (name.includes("hidden")) {
+                Array.prototype.map.call(box, (item) => item.classList.remove('hidden'))
+            } else {
+                Array.prototype.map.call(box, (item) => item.classList.add('hidden'))
+            }
+        }
+
+    </script>
+</body>
+
+</html>

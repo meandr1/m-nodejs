@@ -1,0 +1,32 @@
+* {
+    margin-left: 5px;
+}
+
+#photo {
+    width: 315px;
+    height: 360px;
+    float: right;
+    margin: 30px;
+    border-radius: 35px;
+    box-shadow: 0px 0px 14px 11px grey;
+    padding: 10px;
+}
+
+h1 {
+    font-family: 'Space Mono', monospace;
+    text-align: center;
+}
+
+.mail {
+    display: flex;
+    align-items: center;
+}
+
+a {
+    color: gray;
+}
+
+p {
+    font-family: 'Jost', sans-serif;
+    font-weight: 900;
+}

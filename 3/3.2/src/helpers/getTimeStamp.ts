@@ -1,0 +1,1 @@
+export const getTimeStamp = () => new Date().toISOString().split('T')[0];
