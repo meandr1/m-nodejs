@@ -9,6 +9,9 @@ import { VehiclesModule } from './vehicles/vehicles.module';
 import { dataSourceOptions } from 'src/db/data-source';
 import { ImagesModule } from './images/images.module';
 import { SeederModule } from './seeder/seeder.module';
+import { AuthModule } from './auth/auth.module';
+import { UsersService } from './users/users.service';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -20,7 +23,9 @@ import { SeederModule } from './seeder/seeder.module';
     StarshipsModule,
     VehiclesModule,
     ImagesModule,
-    SeederModule
+    SeederModule,
+    AuthModule,
+    UsersModule
   ],
   controllers: [],
   providers: []
