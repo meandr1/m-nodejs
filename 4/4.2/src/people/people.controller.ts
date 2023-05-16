@@ -10,7 +10,8 @@ import {
   UploadedFiles,
   Req,
   BadRequestException,
-  ParseIntPipe
+  ParseIntPipe,
+  UseGuards
 } from '@nestjs/common';
 import { PeopleService } from './people.service';
 import { CreatePersonDto } from './dto/create-person.dto';
@@ -22,17 +23,19 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { imageFilterOptions } from 'src/images/image.filter';
 import { ExtendedRequest } from 'src/common/request.interfase';
 import { FILE_TYPES_STR } from 'src/common/constants';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @ApiTags('people')
 @Controller('people')
+@UseGuards(AuthGuard)
 export class PeopleController {
   constructor(private readonly peopleService: PeopleService) {}
-
+  
   @Post()
   async create(@Body() createPersonDto: CreatePersonDto) {
     return await this.peopleService.create(createPersonDto);
   }
-
+  
   @Get()
   async findAll(@Paginate() query: PaginateQuery) {
     return await this.peopleService.findAll(query);

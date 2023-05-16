@@ -1,18 +1,20 @@
-import { Controller, Post, Request, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { Body, Controller, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { User } from 'src/users/entities/user.entity';
+import { AuthService } from './auth.service';
+import { CreateUserDto } from 'src/users/dto/create-user.dto';
 
-interface Request {
-  user: User;
-}
-
-@ApiTags('films')
+@ApiTags('Authentication/registration')
 @Controller('auth')
 export class AuthController {
-  @UseGuards(AuthGuard('local'))
+  constructor(private authService: AuthService) {}
+
   @Post('login')
-  async login(@Request() req: Request) {
-    return req.user;
+  signIn(@Body() signInDto: CreateUserDto) {
+    return this.authService.signIn(signInDto.name, signInDto.pass);
+  }
+
+  @Post('register')
+  register(@Body() registerDto: CreateUserDto) {
+    return this.authService.register(registerDto.name, registerDto.pass);
   }
 }

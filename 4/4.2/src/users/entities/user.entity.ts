@@ -9,5 +9,5 @@ export class User {
   name: string;
 
   @Column()
-  pass?: string;
+  pass: string;
 }
