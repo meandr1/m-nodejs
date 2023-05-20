@@ -4,14 +4,18 @@ import {
   Param,
   Delete,
   ParseIntPipe,
-  Res
+  Res,
+  UseGuards
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ImagesService } from './images.service';
 import { Response } from 'express';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @ApiTags('images')
 @Controller('images')
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
 export class ImagesController {
   constructor(private readonly imagesService: ImagesService) {}
 

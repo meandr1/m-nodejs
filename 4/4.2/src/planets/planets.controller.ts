@@ -10,21 +10,25 @@ import {
   UseInterceptors,
   Req,
   UploadedFiles,
-  BadRequestException
+  BadRequestException,
+  UseGuards
 } from '@nestjs/common';
 import { PlanetsService } from './planets.service';
 import { CreatePlanetDto } from './dto/create-planet.dto';
 import { UpdatePlanetDto } from './dto/update-planet.dto';
-import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { Paginate, PaginateQuery } from 'nestjs-paginate';
 import { CreateImageDto } from 'src/images/dto/create-image.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { imageFilterOptions } from 'src/images/image.filter';
 import { ExtendedRequest } from 'src/common/request.interface';
 import { FILE_TYPES_STR } from 'src/common/constants';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @ApiTags('planets')
 @Controller('planets')
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
 export class PlanetsController {
   constructor(private readonly planetsService: PlanetsService) {}
 

@@ -10,21 +10,25 @@ import {
   UseInterceptors,
   Req,
   UploadedFiles,
-  BadRequestException
+  BadRequestException,
+  UseGuards
 } from '@nestjs/common';
 import { StarshipsService } from './starships.service';
 import { CreateStarshipDto } from './dto/create-starship.dto';
 import { UpdateStarshipDto } from './dto/update-starship.dto';
-import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { Paginate, PaginateQuery } from 'nestjs-paginate';
 import { CreateImageDto } from 'src/images/dto/create-image.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { imageFilterOptions } from 'src/images/image.filter';
 import { ExtendedRequest } from 'src/common/request.interface';
 import { FILE_TYPES_STR } from 'src/common/constants';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @ApiTags('starships')
 @Controller('starships')
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
 export class StarshipsController {
   constructor(private readonly starshipsService: StarshipsService) {}
 

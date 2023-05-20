@@ -10,21 +10,25 @@ import {
   UseInterceptors,
   Req,
   UploadedFiles,
-  BadRequestException
+  BadRequestException,
+  UseGuards
 } from '@nestjs/common';
 import { SpeciesService } from './species.service';
 import { CreateSpecieDto } from './dto/create-specie.dto';
 import { UpdateSpecieDto } from './dto/update-specie.dto';
-import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { Paginate, PaginateQuery } from 'nestjs-paginate';
 import { CreateImageDto } from 'src/images/dto/create-image.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { imageFilterOptions } from 'src/images/image.filter';
 import { ExtendedRequest } from 'src/common/request.interface';
 import { FILE_TYPES_STR } from 'src/common/constants';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @ApiTags('species')
 @Controller('species')
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
 export class SpeciesController {
   constructor(private readonly speciesService: SpeciesService) {}
 

@@ -9,21 +9,25 @@ import {
   UseInterceptors,
   Req,
   UploadedFiles,
-  BadRequestException
+  BadRequestException,
+  UseGuards
 } from '@nestjs/common';
 import { FilmsService } from './films.service';
 import { CreateFilmDto } from './dto/create-film.dto';
 import { UpdateFilmDto } from './dto/update-film.dto';
 import { Paginate, PaginateQuery } from 'nestjs-paginate';
-import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { CreateImageDto } from 'src/images/dto/create-image.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { imageFilterOptions } from 'src/images/image.filter';
 import { ExtendedRequest } from 'src/common/request.interface';
 import { FILE_TYPES_STR } from 'src/common/constants';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @ApiTags('films')
 @Controller('films')
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
 export class FilmsController {
   constructor(private readonly filmsService: FilmsService) {}
 

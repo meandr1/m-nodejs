@@ -1,14 +1,17 @@
-import { Controller, Post, Delete } from '@nestjs/common';
+import { Controller, Post, Delete, UseGuards } from '@nestjs/common';
 import { PlanetsSeederService } from './planets.seeder.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { SpeciesSeederService } from './species.seeder.service';
 import { StarshipsSeederService } from './starships.seeder.service';
 import { VehiclesSeederService } from './vehicles.seeder.service';
 import { PeopleSeederService } from './people.seeder.service';
 import { FilmsSeederService } from './films.seeder.service';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @ApiTags('seeder')
 @Controller('seeder')
+@ApiBearerAuth()
+@UseGuards(AuthGuard)
 export class SeederController {
   constructor(
     private readonly planetsSeederService: PlanetsSeederService,

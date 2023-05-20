@@ -26,8 +26,8 @@ import { FILE_TYPES_STR } from 'src/common/constants';
 import { AuthGuard } from 'src/auth/auth.guard';
 
 @ApiTags('people')
-@ApiBearerAuth()
 @Controller('people')
+@ApiBearerAuth()
 @UseGuards(AuthGuard)
 export class PeopleController {
   constructor(private readonly peopleService: PeopleService) {}

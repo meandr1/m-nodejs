@@ -25,6 +25,7 @@ async function bootstrap() {
     .setDescription('The Star Wars API description')
     .setVersion('1.0')
     .addTag('swapi')
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, swapi_config);
   SwaggerModule.setup('swagger', app, document);
