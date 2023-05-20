@@ -3,7 +3,6 @@ import { AuthService } from './auth.service';
 import { UsersModule } from 'src/users/users.module';
 import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
-import { JWT_SECRET } from 'src/common/constants';
 import { BCryptService } from './bcrypt.service';
 
 @Module({
@@ -11,7 +10,7 @@ import { BCryptService } from './bcrypt.service';
     UsersModule,
     JwtModule.register({
       global: true,
-      secret: JWT_SECRET,
+      secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '1h' }
     })
   ],

@@ -17,7 +17,7 @@ import { PeopleService } from './people.service';
 import { CreatePersonDto } from './dto/create-person.dto';
 import { UpdatePersonDto } from './dto/update-person.dto';
 import { Paginate, PaginateQuery } from 'nestjs-paginate';
-import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { CreateImageDto } from 'src/images/dto/create-image.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { imageFilterOptions } from 'src/images/image.filter';
@@ -26,6 +26,7 @@ import { FILE_TYPES_STR } from 'src/common/constants';
 import { AuthGuard } from 'src/auth/auth.guard';
 
 @ApiTags('people')
+@ApiBearerAuth()
 @Controller('people')
 @UseGuards(AuthGuard)
 export class PeopleController {

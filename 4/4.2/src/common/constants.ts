@@ -6,5 +6,4 @@ export const FILE_TYPES_STR = FILE_TYPES.map((type) =>
   type.split('/').pop()?.toUpperCase()
 ).join(', ');
 export const SWAPI_URL = 'https://swapi.dev/api/';
-export const JWT_SECRET = 'boiled potato';
 export const SALT_ROUNDS = 10;
