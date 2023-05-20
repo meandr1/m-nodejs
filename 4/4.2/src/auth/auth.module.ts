@@ -17,6 +17,6 @@ import { BCryptService } from './bcrypt.service';
   ],
   providers: [AuthService, BCryptService],
   controllers: [AuthController],
-  exports: [AuthService],
+  exports: [AuthService]
 })
 export class AuthModule {}

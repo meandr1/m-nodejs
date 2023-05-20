@@ -1,6 +1,6 @@
 import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
 import { FILE_TYPES, MAX_FILES_SIZE } from 'src/common/constants';
-import { ExtendedRequest } from 'src/common/request.interfase';
+import { ExtendedRequest } from 'src/common/request.interface';
 
 export const imageFilterOptions: MulterOptions = {
   limits: { fileSize: MAX_FILES_SIZE },

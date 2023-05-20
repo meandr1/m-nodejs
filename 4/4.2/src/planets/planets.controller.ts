@@ -20,7 +20,7 @@ import { Paginate, PaginateQuery } from 'nestjs-paginate';
 import { CreateImageDto } from 'src/images/dto/create-image.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { imageFilterOptions } from 'src/images/image.filter';
-import { ExtendedRequest } from 'src/common/request.interfase';
+import { ExtendedRequest } from 'src/common/request.interface';
 import { FILE_TYPES_STR } from 'src/common/constants';
 
 @ApiTags('planets')

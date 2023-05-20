@@ -21,7 +21,7 @@ import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { CreateImageDto } from 'src/images/dto/create-image.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { imageFilterOptions } from 'src/images/image.filter';
-import { ExtendedRequest } from 'src/common/request.interfase';
+import { ExtendedRequest } from 'src/common/request.interface';
 import { FILE_TYPES_STR } from 'src/common/constants';
 import { AuthGuard } from 'src/auth/auth.guard';
 
@@ -30,12 +30,12 @@ import { AuthGuard } from 'src/auth/auth.guard';
 @UseGuards(AuthGuard)
 export class PeopleController {
   constructor(private readonly peopleService: PeopleService) {}
-  
+
   @Post()
   async create(@Body() createPersonDto: CreatePersonDto) {
     return await this.peopleService.create(createPersonDto);
   }
-  
+
   @Get()
   async findAll(@Paginate() query: PaginateQuery) {
     return await this.peopleService.findAll(query);
