@@ -24,30 +24,37 @@ import { imageFilterOptions } from 'src/images/image.filter';
 import { ExtendedRequest } from 'src/common/request.interface';
 import { FILE_TYPES_STR } from 'src/common/constants';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { RolesGuard } from 'src/role/roles.guard';
+import { Roles } from 'src/role/role.decorator';
+import { Role } from 'src/role/role.enum';
 
 @ApiTags('starships')
 @Controller('starships')
 @ApiBearerAuth()
-@UseGuards(AuthGuard)
+@UseGuards(AuthGuard, RolesGuard)
 export class StarshipsController {
   constructor(private readonly starshipsService: StarshipsService) {}
 
   @Post()
+  @Roles(Role.Admin)
   async create(@Body() createStarshipDto: CreateStarshipDto) {
     return await this.starshipsService.create(createStarshipDto);
   }
 
   @Get()
+  @Roles(Role.User, Role.Admin)
   async findAll(@Paginate() query: PaginateQuery) {
     return await this.starshipsService.findAll(query);
   }
 
   @Get(':id')
+  @Roles(Role.User, Role.Admin)
   async findOne(@Param('id', ParseIntPipe) id: number) {
     return await this.starshipsService.findOne(id);
   }
 
   @Patch(':id')
+  @Roles(Role.Admin)
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateStarshipDto: UpdateStarshipDto
@@ -56,11 +63,13 @@ export class StarshipsController {
   }
 
   @Delete(':id')
+  @Roles(Role.Admin)
   async remove(@Param('id', ParseIntPipe) id: number) {
     return await this.starshipsService.remove(id);
   }
 
   @Post('image/:id')
+  @Roles(Role.Admin)
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: CreateImageDto })
   @UseInterceptors(FilesInterceptor('files', 10, imageFilterOptions))
@@ -79,6 +88,7 @@ export class StarshipsController {
   }
 
   @Delete('image/:id')
+  @Roles(Role.Admin)
   async deleteImage(@Param('id', ParseIntPipe) id: number) {
     return await this.starshipsService.deleteImageByID(id);
   }

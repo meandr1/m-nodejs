@@ -24,30 +24,37 @@ import { imageFilterOptions } from 'src/images/image.filter';
 import { ExtendedRequest } from 'src/common/request.interface';
 import { FILE_TYPES_STR } from 'src/common/constants';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { RolesGuard } from 'src/role/roles.guard';
+import { Roles } from 'src/role/role.decorator';
+import { Role } from 'src/role/role.enum';
 
 @ApiTags('planets')
 @Controller('planets')
 @ApiBearerAuth()
-@UseGuards(AuthGuard)
+@UseGuards(AuthGuard, RolesGuard)
 export class PlanetsController {
   constructor(private readonly planetsService: PlanetsService) {}
 
   @Post()
+  @Roles(Role.Admin)
   async create(@Body() createPlanetDto: CreatePlanetDto) {
     return await this.planetsService.create(createPlanetDto);
   }
 
   @Get()
+  @Roles(Role.User, Role.Admin)
   async findAll(@Paginate() query: PaginateQuery) {
     return await this.planetsService.findAll(query);
   }
 
   @Get(':id')
+  @Roles(Role.User, Role.Admin)
   async findOne(@Param('id', ParseIntPipe) id: number) {
     return await this.planetsService.findOne(id);
   }
 
   @Patch(':id')
+  @Roles(Role.Admin)
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updatePlanetDto: UpdatePlanetDto
@@ -56,11 +63,13 @@ export class PlanetsController {
   }
 
   @Delete(':id')
+  @Roles(Role.Admin)
   async remove(@Param('id', ParseIntPipe) id: number) {
     return await this.planetsService.remove(id);
   }
 
   @Post('image/:id')
+  @Roles(Role.Admin)
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: CreateImageDto })
   @UseInterceptors(FilesInterceptor('files', 10, imageFilterOptions))
@@ -79,6 +88,7 @@ export class PlanetsController {
   }
 
   @Delete('image/:id')
+  @Roles(Role.Admin)
   async deleteImage(@Param('id', ParseIntPipe) id: number) {
     return await this.planetsService.deleteImageByID(id);
   }

@@ -24,30 +24,37 @@ import { imageFilterOptions } from 'src/images/image.filter';
 import { ExtendedRequest } from 'src/common/request.interface';
 import { FILE_TYPES_STR } from 'src/common/constants';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { Role } from 'src/role/role.enum';
+import { Roles } from 'src/role/role.decorator';
+import { RolesGuard } from 'src/role/roles.guard';
 
 @ApiTags('people')
 @Controller('people')
 @ApiBearerAuth()
-@UseGuards(AuthGuard)
+@UseGuards(AuthGuard, RolesGuard)
 export class PeopleController {
   constructor(private readonly peopleService: PeopleService) {}
 
   @Post()
+  @Roles(Role.Admin)
   async create(@Body() createPersonDto: CreatePersonDto) {
     return await this.peopleService.create(createPersonDto);
   }
 
   @Get()
+  @Roles(Role.User, Role.Admin)
   async findAll(@Paginate() query: PaginateQuery) {
     return await this.peopleService.findAll(query);
   }
 
   @Get(':id')
+  @Roles(Role.User, Role.Admin)
   async findOne(@Param('id', ParseIntPipe) id: number) {
     return await this.peopleService.findOne(id);
   }
 
   @Patch(':id')
+  @Roles(Role.Admin)
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updatePersonDto: UpdatePersonDto
@@ -56,11 +63,13 @@ export class PeopleController {
   }
 
   @Delete(':id')
+  @Roles(Role.Admin)
   async delete(@Param('id', ParseIntPipe) id: number) {
     return await this.peopleService.remove(id);
   }
 
   @Post('image/:id')
+  @Roles(Role.Admin)
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: CreateImageDto })
   @UseInterceptors(FilesInterceptor('files', 10, imageFilterOptions))
@@ -79,6 +88,7 @@ export class PeopleController {
   }
 
   @Delete('image/:id')
+  @Roles(Role.Admin)
   async deleteImage(@Param('id', ParseIntPipe) id: number) {
     return await this.peopleService.deleteImageByID(id);
   }

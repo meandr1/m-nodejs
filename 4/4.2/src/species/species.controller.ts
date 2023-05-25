@@ -24,30 +24,37 @@ import { imageFilterOptions } from 'src/images/image.filter';
 import { ExtendedRequest } from 'src/common/request.interface';
 import { FILE_TYPES_STR } from 'src/common/constants';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { RolesGuard } from 'src/role/roles.guard';
+import { Roles } from 'src/role/role.decorator';
+import { Role } from 'src/role/role.enum';
 
 @ApiTags('species')
 @Controller('species')
 @ApiBearerAuth()
-@UseGuards(AuthGuard)
+@UseGuards(AuthGuard, RolesGuard)
 export class SpeciesController {
   constructor(private readonly speciesService: SpeciesService) {}
 
   @Post()
+  @Roles(Role.Admin)
   async create(@Body() createSpecieDto: CreateSpecieDto) {
     return await this.speciesService.create(createSpecieDto);
   }
 
   @Get()
+  @Roles(Role.User, Role.Admin)
   async findAll(@Paginate() query: PaginateQuery) {
     return await this.speciesService.findAll(query);
   }
 
   @Get(':id')
+  @Roles(Role.User, Role.Admin)
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.speciesService.findOne(id);
   }
 
   @Patch(':id')
+  @Roles(Role.Admin)
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateSpecieDto: UpdateSpecieDto
@@ -56,11 +63,13 @@ export class SpeciesController {
   }
 
   @Delete(':id')
+  @Roles(Role.Admin)
   async remove(@Param('id', ParseIntPipe) id: number) {
     return await this.speciesService.remove(id);
   }
 
   @Post('image/:id')
+  @Roles(Role.Admin)
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: CreateImageDto })
   @UseInterceptors(FilesInterceptor('files', 10, imageFilterOptions))
@@ -79,6 +88,7 @@ export class SpeciesController {
   }
 
   @Delete('image/:id')
+  @Roles(Role.Admin)
   async deleteImage(@Param('id', ParseIntPipe) id: number) {
     return await this.speciesService.deleteImageByID(id);
   }

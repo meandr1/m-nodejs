@@ -7,11 +7,14 @@ import { VehiclesSeederService } from './vehicles.seeder.service';
 import { PeopleSeederService } from './people.seeder.service';
 import { FilmsSeederService } from './films.seeder.service';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { RolesGuard } from 'src/role/roles.guard';
+import { Roles } from 'src/role/role.decorator';
+import { Role } from 'src/role/role.enum';
 
 @ApiTags('seeder')
 @Controller('seeder')
 @ApiBearerAuth()
-@UseGuards(AuthGuard)
+@UseGuards(AuthGuard, RolesGuard)
 export class SeederController {
   constructor(
     private readonly planetsSeederService: PlanetsSeederService,
@@ -23,6 +26,7 @@ export class SeederController {
   ) {}
 
   @Post()
+  @Roles(Role.Admin)
   async fillDB() {
     await this.planetsSeederService.fillPlanets();
     await this.speciesSeederService.fillSpecies();
@@ -38,6 +42,7 @@ export class SeederController {
   }
 
   @Delete()
+  @Roles(Role.Admin)
   async clearDB() {
     await this.filmsSeederService.clearFilms();
     await this.peopleSeederService.clearPeople();

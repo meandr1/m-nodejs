@@ -17,7 +17,7 @@ export class AuthService {
     if (!user || !(await this.bcryptService.checkUser(pass, user.pass))) {
       throw new UnauthorizedException('Login or password is incorrect');
     }
-    const payload = { username: user.name, sub: user.id };
+    const payload = { username: user.name, sub: user.id, role: user.role };
     return {
       access_token: await this.jwtService.signAsync(payload)
     };
