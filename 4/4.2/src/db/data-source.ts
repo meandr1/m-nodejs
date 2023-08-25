@@ -5,7 +5,7 @@ ConfigModule.forRoot();
 
 export const dataSourceOptions: DataSourceOptions = {
   type: 'mysql',
-  host: 'localhost',
+  host: 'db',
   port: 3306,
   username: process.env.MYSQL_USER,
   password: process.env.MYSQL_PASS,

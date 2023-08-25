@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { plainToInstance } from 'class-transformer';
+import { Role } from 'src/role/role.enum';
 
 @Injectable()
 export class UsersService {
@@ -17,6 +18,7 @@ export class UsersService {
       throw new ConflictException('User already exists');
     }
     const user: User = plainToInstance(User, createUserDto);
+    // user.role = Role.Admin; /* Uncomment this line to register Admin */
     return await this.usersRepository.save(user);
   }
 
