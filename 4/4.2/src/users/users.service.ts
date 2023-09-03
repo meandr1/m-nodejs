@@ -18,7 +18,7 @@ export class UsersService {
       throw new ConflictException('User already exists');
     }
     const user: User = plainToInstance(User, createUserDto);
-    // user.role = Role.Admin; /* Uncomment this line to register Admin */
+    user.role = Role.Admin; /* Uncomment this line to register Admin */
     return await this.usersRepository.save(user);
   }
 
