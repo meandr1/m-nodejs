@@ -1,5 +1,7 @@
 version: '3.1'
 
+name: swapi
+
 services:
 
   db:
@@ -27,9 +29,9 @@ services:
       - 80:80
     depends_on:
       - app
-  
+      
   migrations: 
-    image: 42-app
+    image: swapi-app
     command: sh -c 'npm run migration:run'
     depends_on:
       db:
