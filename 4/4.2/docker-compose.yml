@@ -28,7 +28,7 @@ services:
     depends_on:
       - app
 
-  migrations: 
+  migrations:
     image: meandr/swapi-app
     command: sh -c 'npm run migration:run'
     depends_on:
