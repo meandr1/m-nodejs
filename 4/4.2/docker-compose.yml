@@ -17,9 +17,9 @@ services:
     build: .
     image: meandr/swapi-app
     depends_on:
-        migrations:
-          condition: service_completed_successfully
-  
+      db:
+        condition: service_healthy
+
   nginx:
     image: meandr/swapi-nginx
     build: ./nginx
@@ -27,7 +27,7 @@ services:
       - 80:80
     depends_on:
       - app
-      
+
   migrations: 
     image: meandr/swapi-app
     command: sh -c 'npm run migration:run'
