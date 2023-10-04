@@ -12,7 +12,7 @@ export class S3FilesService {
         Key: fileName
       })
       .promise();
-    const fileExt = fileName.split('.').pop()?.toLowerCase();
+    const fileExt = fileName.split('.').pop()?.toLowerCase() || '';
     if (file.Body && Buffer.isBuffer(file.Body)) {
       res.set('Content-Type', `image/${fileExt}`).send(file.Body);
     }
@@ -23,7 +23,8 @@ export class S3FilesService {
 
   async saveFile(file: Express.Multer.File, fileName: string) {
     const s3 = new S3();
-    const uploadResult = await s3
+    try {
+      const uploadResult = await s3
       .upload({
         Bucket: process.env.AWS_BUCKET_NAME || '',
         Body: file.buffer,
@@ -31,15 +32,27 @@ export class S3FilesService {
       })
       .promise();
     return uploadResult.Key;
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Something goes wrong during saving file to AWS'
+      );
+    }
+    
   }
 
   async deleteFileByName(fileName: string) {
     const s3 = new S3();
-    return await s3
-      .deleteObject({
-        Bucket: process.env.AWS_BUCKET_NAME || '',
-        Key: fileName
-      })
-      .promise();
+    try {
+      return await s3
+        .deleteObject({
+          Bucket: process.env.AWS_BUCKET_NAME || '',
+          Key: fileName
+        })
+        .promise();
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Something goes wrong during deleting file from AWS'
+      );
+    }
   }
 }
